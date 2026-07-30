@@ -1,0 +1,76 @@
+import { Target, Eye, HeartHandshake } from 'lucide-react'
+import Container from '../ui/Container.jsx'
+import SectionHeading from '../ui/SectionHeading.jsx'
+import FadeIn from '../ui/FadeIn.jsx'
+
+const pillars = [
+  {
+    icon: Target,
+    title: 'Mission',
+    text: 'To deliver end-to-end architectural solutions — from concept to construction — with precision, quality, and full transparency.',
+  },
+  {
+    icon: Eye,
+    title: 'Vision',
+    text: 'To be the studio Trichy trusts for timeless design that improves everyday living, not just square footage.',
+  },
+  {
+    icon: HeartHandshake,
+    title: 'Values',
+    text: 'Honest budgeting, considered material choices, and a stress-free client experience from planning through handover.',
+  },
+]
+
+export default function About() {
+  return (
+    <section id="about" className="relative py-28 md:py-36 bg-stone-bg">
+      <Container>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-10 items-center">
+          <FadeIn direction="right" className="lg:col-span-5 relative">
+            <div className="relative rounded-3xl overflow-hidden aspect-[4/5]">
+              <img
+                src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1200&auto=format&fit=crop"
+                alt="Architect reviewing plans over a residential floor layout"
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <div className="hidden md:flex absolute -bottom-8 -right-8 h-40 w-40 rounded-2xl bg-white card-hairline shadow-xl items-center justify-center flex-col p-6 text-center">
+              <span className="font-display text-3xl">20+</span>
+              <span className="text-xs uppercase tracking-widest2 text-ink-muted mt-1">
+                Years in Practice
+              </span>
+            </div>
+          </FadeIn>
+
+          <div className="lg:col-span-7">
+            <SectionHeading
+              sheet="A-01"
+              eyebrow="The Studio"
+              title="Design built on planning, not guesswork."
+              description="At V Thittam Design Studio, we believe every successful project begins with thoughtful planning and innovative design."
+            />
+
+            <FadeIn delay={0.15} className="mt-8 max-w-xl text-ink-muted leading-relaxed">
+              Our experienced architects and designers collaborate closely with clients to create
+              personalized residential and commercial spaces that balance aesthetics, functionality, and
+              sustainability. From concept development and space planning to construction execution and
+              government approvals, we provide end-to-end architectural solutions with precision, quality,
+              and transparency — delivering timeless designs that enhance everyday living while ensuring a
+              smooth, stress-free experience from planning to completion.
+            </FadeIn>
+
+            <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6">
+              {pillars.map((pillar, i) => (
+                <FadeIn key={pillar.title} delay={0.1 * i} className="card-hairline p-6">
+                  <pillar.icon size={20} className="text-clay-600" strokeWidth={1.5} />
+                  <h3 className="mt-4 font-display text-lg">{pillar.title}</h3>
+                  <p className="mt-2 text-sm text-ink-muted leading-relaxed">{pillar.text}</p>
+                </FadeIn>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Container>
+    </section>
+  )
+}

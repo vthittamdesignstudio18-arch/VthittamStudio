@@ -1,0 +1,35 @@
+# Apache / cPanel configuration for the V Thittam single-page app.
+# Vite copies everything in public/ into dist/, so this ships with the build.
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Deploying into a subdirectory? Change this to /your-subfolder/
+  # and set `base: '/your-subfolder/'` in vite.config.js to match.
+  RewriteBase /
+
+  # Real files and directories are served as-is.
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Everything else (/quote, and any future route) falls through to the app.
+  RewriteRule . /index.html [L]
+</IfModule>
+
+# Vite fingerprints JS and CSS filenames, so these can be cached indefinitely.
+# Images in public/ are deliberately excluded — their names never change.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(js|css|woff2?)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  <FilesMatch "\.html$">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/plain \
+    application/javascript application/json image/svg+xml
+</IfModule>

@@ -1,0 +1,256 @@
+import { useRef, useState } from 'react'
+import { Link } from '../lib/router.jsx'
+import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion'
+import { AlertCircle, ArrowLeft, ArrowRight, CheckCircle2, Clock, Mail, Phone } from 'lucide-react'
+import Container from '../components/ui/Container.jsx'
+import FadeIn from '../components/ui/FadeIn.jsx'
+import Button from '../components/ui/Button.jsx'
+import {
+  FloatingInput,
+  FloatingSelect,
+  FloatingTextarea,
+} from '../components/ui/FloatingField.jsx'
+import { quoteFields, quoteSteps, initialQuoteValues } from '../data/quote.js'
+import { submitQuoteRequest } from '../lib/quoteSubmission.js'
+
+const controls = {
+  input: FloatingInput,
+  select: FloatingSelect,
+  textarea: FloatingTextarea,
+}
+
+const EASE = [0.16, 1, 0.3, 1]
+
+export default function QuotePage() {
+  const heroRef = useRef(null)
+  const [values, setValues] = useState(initialQuoteValues)
+  const [status, setStatus] = useState('idle') // idle | submitting | success | error
+  const [errorMessage, setErrorMessage] = useState('')
+
+  // Subtle depth as the hero scrolls away — same language as the home page.
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ['start start', 'end start'],
+  })
+  const heroY = useTransform(scrollYProgress, [0, 1], [0, 80])
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.85], [1, 0])
+
+  function handleChange(e) {
+    setValues((v) => ({ ...v, [e.target.name]: e.target.value }))
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    setStatus('submitting')
+
+    const { ok, error } = await submitQuoteRequest(values)
+
+    if (ok) {
+      setStatus('success')
+      setValues(initialQuoteValues)
+    } else {
+      setStatus('error')
+      setErrorMessage(error)
+    }
+  }
+
+  return (
+    <>
+      {/* ── Hero ─────────────────────────────────────────────── */}
+      <section ref={heroRef} className="relative bg-ink text-white overflow-hidden">
+        <div className="absolute inset-0 blueprint-grid" aria-hidden="true" />
+        <div
+          className="absolute -top-40 -right-32 h-[32rem] w-[32rem] rounded-full bg-clay-600/20 blur-3xl"
+          aria-hidden="true"
+        />
+
+        <Container className="relative pt-40 pb-24 md:pt-48 md:pb-32">
+          <motion.div style={{ y: heroY, opacity: heroOpacity }} className="max-w-3xl">
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: EASE }}
+              className="sheet-label text-white/50"
+            >
+              Sheet Q-01 — Request a Quote
+            </motion.div>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.05, ease: EASE }}
+              className="mt-5 text-balance text-4xl md:text-5xl lg:text-[3.8rem] leading-[1.06] font-medium text-white"
+            >
+              Let's put a number to the house you keep imagining.
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.12, ease: EASE }}
+              className="mt-6 text-base md:text-lg leading-relaxed text-white/70 max-w-xl"
+            >
+              Share the site, the scope and the budget you have in mind. We'll come back with an
+              honest assessment of what it takes to build it — no obligation, no template pricing.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2, ease: EASE }}
+              className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4 text-sm text-white/60"
+            >
+              <span className="inline-flex items-center gap-2">
+                <Clock size={16} strokeWidth={1.5} /> Response within one business day
+              </span>
+              <a
+                href="tel:+919876543210"
+                className="inline-flex items-center gap-2 hover:text-white transition-colors duration-300"
+              >
+                <Phone size={16} strokeWidth={1.5} /> +91 98765 43210
+              </a>
+              <a
+                href="mailto:studio@vthittam.com"
+                className="inline-flex items-center gap-2 hover:text-white transition-colors duration-300"
+              >
+                <Mail size={16} strokeWidth={1.5} /> studio@vthittam.com
+              </a>
+            </motion.div>
+          </motion.div>
+        </Container>
+      </section>
+
+      {/* ── Form ─────────────────────────────────────────────── */}
+      <section className="py-24 md:py-32 bg-stone-bg">
+        <Container>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8">
+            {/* What happens next */}
+            <FadeIn direction="right" className="lg:col-span-4 flex flex-col gap-10">
+              <div>
+                <span className="sheet-label">What happens next</span>
+                <h2 className="mt-3 font-display text-3xl leading-tight">
+                  Three steps, then a proposal.
+                </h2>
+              </div>
+
+              <ol className="flex flex-col gap-8">
+                {quoteSteps.map((step, i) => (
+                  <li key={step.code} className="flex gap-5">
+                    <div className="h-12 w-12 shrink-0 rounded-full bg-white border-2 border-ink flex items-center justify-center font-display text-sm">
+                      {i + 1}
+                    </div>
+                    <div>
+                      <span className="sheet-label">{step.code}</span>
+                      <h3 className="mt-1 font-display text-lg">{step.title}</h3>
+                      <p className="mt-2 text-sm text-ink-muted leading-relaxed max-w-xs">
+                        {step.description}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+
+              <Link
+                to="/"
+                className="nav-link self-start inline-flex items-center gap-2 text-sm font-semibold text-ink"
+              >
+                <ArrowLeft size={16} strokeWidth={1.5} /> Back to the studio
+              </Link>
+            </FadeIn>
+
+            {/* Form card */}
+            <FadeIn
+              direction="left"
+              delay={0.1}
+              className="lg:col-span-8 card-hairline p-8 md:p-10 relative overflow-hidden"
+            >
+              <AnimatePresence mode="wait">
+                {status === 'success' ? (
+                  <motion.div
+                    key="success"
+                    initial={{ opacity: 0, scale: 0.96 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="h-full min-h-[520px] flex flex-col items-center justify-center text-center gap-4"
+                  >
+                    <CheckCircle2 size={44} className="text-clay-600" strokeWidth={1.5} />
+                    <h3 className="font-display text-2xl">Request received.</h3>
+                    <p className="text-ink-muted max-w-sm">
+                      Thank you — a principal architect will review your brief and call you within
+                      one business day.
+                    </p>
+                    <Button as={Link} to="/" variant="outline" className="mt-2">
+                      Back to the studio
+                    </Button>
+                  </motion.div>
+                ) : (
+                  <motion.form
+                    key="form"
+                    onSubmit={handleSubmit}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="flex flex-col gap-10"
+                  >
+                    <div>
+                      <span className="sheet-label">Project Brief</span>
+                      <h2 className="mt-2 font-display text-2xl">Tell us what you're building.</h2>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-9">
+                      {quoteFields.map((field) => {
+                        const Control = controls[field.control]
+                        const { name, label, control: _control, full, ...rest } = field
+
+                        return (
+                          <div key={name} className={full ? 'sm:col-span-2' : undefined}>
+                            <Control
+                              name={name}
+                              label={label}
+                              value={values[name]}
+                              onChange={handleChange}
+                              {...rest}
+                            />
+                          </div>
+                        )
+                      })}
+                    </div>
+
+                    <input
+                      type="checkbox"
+                      name="botcheck"
+                      checked={values.botcheck === 'on'}
+                      onChange={handleChange}
+                      tabIndex={-1}
+                      autoComplete="off"
+                      className="hidden"
+                      aria-hidden="true"
+                    />
+
+                    {status === 'error' && (
+                      <div className="flex items-start gap-3 rounded-xl bg-red-50 border border-red-200 px-5 py-4 text-sm text-red-800">
+                        <AlertCircle size={18} strokeWidth={1.5} className="mt-0.5 shrink-0" />
+                        <span>{errorMessage}</span>
+                      </div>
+                    )}
+
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-5">
+                      <Button type="submit" variant="primary" disabled={status === 'submitting'}>
+                        {status === 'submitting' ? 'Sending…' : 'Request Quote'}
+                        {status !== 'submitting' && <ArrowRight size={16} />}
+                      </Button>
+                      <p className="text-xs text-ink-muted leading-relaxed max-w-xs">
+                        Your details stay with the studio. We never share enquiries with vendors or
+                        third parties.
+                      </p>
+                    </div>
+                  </motion.form>
+                )}
+              </AnimatePresence>
+            </FadeIn>
+          </div>
+        </Container>
+      </section>
+    </>
+  )
+}
