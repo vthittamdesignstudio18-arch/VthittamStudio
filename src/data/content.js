@@ -1,34 +1,34 @@
-import { Compass, PencilRuler, FileCheck2, HardHat, KeyRound, MessageCircleMore } from 'lucide-react'
+import { Box, PencilRuler, HardHat, KeyRound, MapPin, MessageCircleMore } from 'lucide-react'
 
 export const processSteps = [
   {
     code: '01',
     title: 'Consultation',
-    description: 'We walk your site, understand your brief, and set a realistic budget and timeline together.',
+    description: 'We understand your brief, your budget and how you actually want to live in the space.',
     icon: MessageCircleMore,
   },
   {
     code: '02',
-    title: 'Planning',
-    description: 'Zoning, orientation, and setback studies establish what the plot can responsibly hold.',
-    icon: Compass,
+    title: 'Site Visit',
+    description: 'We walk the plot to read orientation, levels, access and setbacks before a line is drawn.',
+    icon: MapPin,
   },
   {
     code: '03',
     title: 'Design',
-    description: 'Concept drawings and 3D elevations are developed and refined through structured review rounds.',
+    description: 'Concept plans and elevations are developed and refined through structured review rounds.',
     icon: PencilRuler,
   },
   {
     code: '04',
-    title: 'Approval',
-    description: 'Statutory drawings are prepared and filed, and we liaise directly with the local authority.',
-    icon: FileCheck2,
+    title: '3D Visualization',
+    description: 'You see the design rendered in three dimensions and approve it before construction begins.',
+    icon: Box,
   },
   {
     code: '05',
-    title: 'Construction',
-    description: 'Site execution proceeds against the working drawings, with quality checks at every milestone.',
+    title: 'Execution',
+    description: 'Our site engineers execute the drawings on site, with quality checks at every milestone.',
     icon: HardHat,
   },
   {
@@ -40,9 +40,8 @@ export const processSteps = [
 ]
 
 export const stats = [
-  { value: 20, suffix: '+', label: 'Years Experience' },
-  { value: 250, suffix: '+', label: 'Projects Delivered' },
-  { value: 100, suffix: '%', label: 'Client Satisfaction' },
+  { value: 5, suffix: '+', label: 'Years' },
+  { value: 40, suffix: '+', label: 'Projects' },
 ]
 
 export const whyChooseUs = [
@@ -58,7 +57,7 @@ export const whyChooseUs = [
   },
   {
     title: 'Experienced Team',
-    description: 'Architects, structural engineers, and site supervisors who have delivered 250+ projects together.',
+    description: 'Architects, structural engineers, and site supervisors who have delivered 40+ projects together.',
     icon: 'Users',
   },
   {

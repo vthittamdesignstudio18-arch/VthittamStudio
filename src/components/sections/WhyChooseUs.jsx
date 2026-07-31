@@ -14,11 +14,11 @@ export default function WhyChooseUs() {
               id="why-heading"
               sheet="A-07"
               eyebrow="Why Choose Us"
-              title="Twenty years of decisions we'd make the same way twice."
+              title="Five years of decisions we'd make the same way twice."
               description="Every project runs through the same standards — regardless of size, budget, or how visible the work ends up being."
             />
 
-            <div className="mt-10 md:mt-12 grid grid-cols-3 gap-4 sm:gap-6 max-w-sm">
+            <div className="mt-10 md:mt-12 grid grid-cols-2 gap-6 sm:gap-8 max-w-xs">
               {stats.map((stat) => (
                 <div key={stat.label}>
                   <div className="font-display text-2xl sm:text-3xl">

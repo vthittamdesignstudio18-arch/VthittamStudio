@@ -1,13 +1,21 @@
-import { Phone, Mail, MapPin, Clock, Check, ArrowRight } from 'lucide-react'
+import { Phone, Mail, MapPin, Clock, Check, ArrowRight, MessageCircle } from 'lucide-react'
 import { Link } from '../../lib/router.jsx'
 import Container from '../ui/Container.jsx'
 import SectionHeading from '../ui/SectionHeading.jsx'
 import FadeIn from '../ui/FadeIn.jsx'
 import Button from '../ui/Button.jsx'
-import { business } from '../../config/site.js'
+import { business, telLink, whatsappLink } from '../../config/site.js'
 
 const contactDetails = [
-  { icon: Phone, label: 'Phone', value: business.telephone, href: `tel:${business.telephone.replace(/\s/g, '')}` },
+  { icon: Phone, label: 'Phone', value: business.telephone, href: telLink(business.telephone) },
+  { icon: Phone, label: 'Phone (Alt)', value: business.telephoneAlt, href: telLink(business.telephoneAlt) },
+  {
+    icon: MessageCircle,
+    label: 'WhatsApp',
+    value: business.telephoneAlt,
+    href: whatsappLink(),
+    external: true,
+  },
   { icon: Mail, label: 'Email', value: business.email, href: `mailto:${business.email}` },
   {
     icon: MapPin,
@@ -51,7 +59,10 @@ export default function Contact() {
                     {item.href ? (
                       <a
                         href={item.href}
-                        className="mt-1 block text-sm text-ink underline decoration-ink/20 underline-offset-4 hover:decoration-ink transition-colors"
+                        {...(item.external
+                          ? { target: '_blank', rel: 'noopener noreferrer' }
+                          : {})}
+                        className="mt-1 block text-sm text-ink underline decoration-ink/20 underline-offset-4 hover:decoration-ink transition-colors break-words"
                       >
                         {item.value}
                       </a>

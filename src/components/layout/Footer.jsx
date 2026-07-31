@@ -1,14 +1,23 @@
-import { Instagram, Linkedin, Facebook, Phone, Mail } from 'lucide-react'
+import { Instagram, Facebook, MessageCircle, Phone, Mail } from 'lucide-react'
 import Container from '../ui/Container.jsx'
 import Logo from '../ui/Logo.jsx'
 import { navLinks } from '../../data/nav.js'
 import { services } from '../../data/services.js'
+import { business, telLink, whatsappLink } from '../../config/site.js'
 import useSectionNavigation from '../../hooks/useSectionNavigation.js'
 
 const socials = [
-  { Icon: Instagram, label: 'Instagram', href: '#' },
-  { Icon: Linkedin, label: 'LinkedIn', href: '#' },
-  { Icon: Facebook, label: 'Facebook', href: '#' },
+  {
+    Icon: Instagram,
+    label: 'Instagram',
+    href: 'https://www.instagram.com/thittam_design_studio?igsh=MWFvZ3Jyd2hoeXhnNw==',
+  },
+  {
+    Icon: Facebook,
+    label: 'Facebook',
+    href: 'https://www.facebook.com/share/1DhSGaWCUN/?mibextid=wwXIfr',
+  },
+  { Icon: MessageCircle, label: 'WhatsApp', href: whatsappLink() },
 ]
 
 export default function Footer() {
@@ -33,16 +42,22 @@ export default function Footer() {
 
             <address className="mt-6 flex flex-col gap-2.5 text-sm not-italic">
               <a
-                href="tel:+919876543210"
+                href={telLink(business.telephone)}
                 className="inline-flex items-center gap-2.5 text-white/70 hover:text-white transition-colors w-fit"
               >
-                <Phone size={15} strokeWidth={1.5} aria-hidden="true" /> +91 98765 43210
+                <Phone size={15} strokeWidth={1.5} aria-hidden="true" /> {business.telephone}
               </a>
               <a
-                href="mailto:studio@vthittam.com"
+                href={telLink(business.telephoneAlt)}
                 className="inline-flex items-center gap-2.5 text-white/70 hover:text-white transition-colors w-fit"
               >
-                <Mail size={15} strokeWidth={1.5} aria-hidden="true" /> studio@vthittam.com
+                <Phone size={15} strokeWidth={1.5} aria-hidden="true" /> {business.telephoneAlt}
+              </a>
+              <a
+                href={`mailto:${business.email}`}
+                className="inline-flex items-center gap-2.5 text-white/70 hover:text-white transition-colors w-fit break-all"
+              >
+                <Mail size={15} strokeWidth={1.5} aria-hidden="true" /> {business.email}
               </a>
             </address>
 
@@ -51,7 +66,9 @@ export default function Footer() {
                 <a
                   key={label}
                   href={href}
-                  aria-label={label}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${label} — opens in a new tab`}
                   className="h-10 w-10 rounded-full border border-white/15 flex items-center justify-center hover:bg-white hover:text-ink transition-colors duration-300"
                 >
                   <Icon size={16} aria-hidden="true" />

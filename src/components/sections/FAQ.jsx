@@ -1,9 +1,12 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Plus } from 'lucide-react'
+import { Plus, Phone, ArrowRight } from 'lucide-react'
+import { Link } from '../../lib/router.jsx'
 import Container from '../ui/Container.jsx'
 import SectionHeading from '../ui/SectionHeading.jsx'
+import Button from '../ui/Button.jsx'
 import { faqs } from '../../data/content.js'
+import { business, telLink } from '../../config/site.js'
 
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState(0)
@@ -20,6 +23,28 @@ export default function FAQ() {
               title="Answers before you ask."
               description="If your question isn't here, it takes one message to get a direct answer."
             />
+
+            {/* The left column ran out of content well before the accordion
+                did, leaving a tall empty block on desktop. A direct line is
+                the most useful thing to put there. */}
+            <div className="mt-10 rounded-2xl border border-hairline bg-white/70 p-6">
+              <p className="font-display text-lg">Need a faster answer?</p>
+              <ul className="mt-4 flex flex-col gap-3 list-none">
+                {[business.telephone, business.telephoneAlt].map((number) => (
+                  <li key={number}>
+                    <a
+                      href={telLink(number)}
+                      className="inline-flex items-center gap-3 text-sm text-ink hover:text-clay-800 transition-colors"
+                    >
+                      <span className="h-9 w-9 shrink-0 rounded-full bg-stone-surface flex items-center justify-center">
+                        <Phone size={15} strokeWidth={1.5} aria-hidden="true" />
+                      </span>
+                      {number}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
           <div className="lg:col-span-8 flex flex-col divide-y divide-hairline border-t border-b border-hairline">
@@ -65,6 +90,16 @@ export default function FAQ() {
                 </AnimatePresence>
               </div>
             ))}
+
+            {/* Sits inside the divided list so it reads as the last row
+                rather than a detached banner. */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 py-6">
+              <p className="font-display text-lg md:text-xl">Still have questions?</p>
+              <Button as={Link} to="/quote" variant="primary" className="self-start sm:self-auto">
+                Book Consultation
+                <ArrowRight size={16} aria-hidden="true" />
+              </Button>
+            </div>
           </div>
         </div>
       </Container>

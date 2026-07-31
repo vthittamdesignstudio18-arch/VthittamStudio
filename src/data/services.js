@@ -79,8 +79,7 @@ export const services = [
   {
     code: 'A-12',
     title: 'Working Drawings',
-    description:
-      'Detailed structural, electrical, and plumbing drawing sets ready for contractors to build from directly.',
+    description: 'Ready-to-build drawings for architects, engineers, and contractors.',
     icon: 'Ruler',
   },
 ]

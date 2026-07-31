@@ -20,9 +20,15 @@ export const business = {
   tagline: 'Architecture, Interiors & Construction',
   // Kept short enough to survive Google's ~155 character snippet truncation.
   description:
-    'Architecture firm and interior design studio in Trichy delivering residential and commercial projects end to end — design, approvals and construction.',
-  telephone: '+91 98765 43210',
-  email: 'studio@vthittam.com',
+    'Architecture and interior design studio in Trichy. Residential and commercial architects delivering design, working drawings, approvals and construction.',
+  // Primary line first — it is the one used in schema.org telephone and in
+  // the tel: links. The second line is listed alongside it everywhere the
+  // studio's numbers are shown.
+  telephone: '+91 80151 45040',
+  telephoneAlt: '+91 87607 80610',
+  email: 'Vthittamdesignstudio@gmail.com',
+  /** WhatsApp business line. wa.me needs the bare international form. */
+  whatsapp: '918760780610',
   address: {
     street: 'No. 48, 1st Floor, SG Complex, Puthur Main Road',
     locality: 'Tiruchirappalli',
@@ -37,8 +43,11 @@ export const business = {
   ],
   priceRange: '₹₹',
   areaServed: ['Tiruchirappalli', 'Trichy', 'Tamil Nadu', 'South India'],
-  sameAs: [],
-  foundingYear: 2005,
+  sameAs: [
+    'https://www.instagram.com/thittam_design_studio',
+    'https://www.facebook.com/share/1DhSGaWCUN/',
+  ],
+  foundingYear: 2021,
 }
 
 /** Services surfaced to search engines as an offer catalogue. */
@@ -47,9 +56,12 @@ export const serviceOffers = [
   'Commercial Architecture',
   'Interior Design',
   'House Plan Design & Approval',
-  'Elevation Design',
-  '3D Visualisation',
-  'Turnkey Construction',
+  '3D Elevation Design',
+  'Working Drawings',
+  'Structural Drawings',
+  'Building Planning',
+  'Construction Consultancy',
+  'Home Construction',
   'Space Planning',
   'Home Renovation',
 ]
@@ -62,18 +74,25 @@ export const serviceOffers = [
 export const routes = {
   '/': {
     path: '/',
-    title: 'Architecture Firm in Trichy | V Thittam Design Studio',
+    title: 'Architecture in Trichy | Interior Designers | V Thittam Studio',
     description:
-      'Architecture firm and interior designers in Trichy. Residential and commercial architecture, luxury home design, house plans and turnkey construction.',
+      'Architecture in Trichy — residential architects, interior designers and construction consultants delivering house plans, 3D elevations and working drawings.',
     keywords: [
-      'architecture firm in Trichy',
-      'interior designers in Trichy',
-      'residential architecture Trichy',
-      'commercial architecture Trichy',
-      'luxury home design Trichy',
-      'house plan designers Trichy',
-      'modern architects Trichy',
-      'building design Trichy',
+      'architecture in Trichy',
+      'interior designers Trichy',
+      'residential architects Trichy',
+      'commercial architects Tamil Nadu',
+      'architects in Tamil Nadu',
+      'construction consultants Trichy',
+      'house plan designers',
+      '3D elevation design',
+      'working drawings',
+      'interior design studio',
+      'home construction Trichy',
+      'architecture and interior design',
+      'building planning',
+      'structural drawings',
+      'house design',
     ],
     ogImage: '/projects/residential/residential-image-1-1200.webp',
     ogImageAlt: 'Contemporary villa designed by V Thittam Design Studio in Trichy',
@@ -84,11 +103,12 @@ export const routes = {
     description:
       'Request a free quote for your architecture, interior design or construction project in Trichy. A principal architect replies within one business day.',
     keywords: [
-      'architecture quote Trichy',
-      'interior design cost Trichy',
-      'house construction estimate Trichy',
-      'architectural consultancy',
-      'building design Trichy',
+      'architecture in Trichy',
+      'construction consultants Trichy',
+      'house plan designers',
+      'home construction Trichy',
+      'building planning',
+      'interior design studio',
     ],
     ogImage: '/projects/interior/interior-image-5-1200.webp',
     ogImageAlt: 'Interior project completed by V Thittam Design Studio',
@@ -97,6 +117,14 @@ export const routes = {
 }
 
 export const defaultRoute = routes['/']
+
+/** Pre-filled WhatsApp deep link. Resolves to the app on mobile and web on desktop. */
+export const whatsappLink = (
+  message = "Hello, I'd like to discuss an architecture or interior project."
+) => `https://wa.me/${business.whatsapp}?text=${encodeURIComponent(message)}`
+
+/** `tel:` href for any of the studio's numbers. */
+export const telLink = (n) => `tel:${n.replace(/[^\d+]/g, '')}`
 
 /** Absolute URL for any site-relative path. */
 export const absolute = (p = '/') => `${SITE_URL}${p.startsWith('/') ? p : `/${p}`}`
@@ -136,6 +164,22 @@ export function organizationSchema() {
     url: SITE_URL,
     telephone: business.telephone,
     email: business.email,
+    contactPoint: [
+      {
+        '@type': 'ContactPoint',
+        telephone: business.telephone,
+        contactType: 'customer service',
+        areaServed: 'IN',
+        availableLanguage: ['en', 'ta'],
+      },
+      {
+        '@type': 'ContactPoint',
+        telephone: business.telephoneAlt,
+        contactType: 'sales',
+        areaServed: 'IN',
+        availableLanguage: ['en', 'ta'],
+      },
+    ],
     image: absolute('/brand/logo.webp'),
     logo: {
       '@type': 'ImageObject',

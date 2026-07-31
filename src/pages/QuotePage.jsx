@@ -11,6 +11,7 @@ import {
   FloatingTextarea,
 } from '../components/ui/FloatingField.jsx'
 import { quoteFields, quoteSteps, initialQuoteValues } from '../data/quote.js'
+import { business, telLink } from '../config/site.js'
 import { submitQuoteRequest } from '../lib/quoteSubmission.js'
 
 const controls = {
@@ -95,16 +96,16 @@ export default function QuotePage() {
                 <Clock size={16} strokeWidth={1.5} aria-hidden="true" /> Response within one business day
               </span>
               <a
-                href="tel:+919876543210"
+                href={telLink(business.telephone)}
                 className="inline-flex items-center gap-2 hover:text-white transition-colors duration-300"
               >
-                <Phone size={16} strokeWidth={1.5} aria-hidden="true" /> +91 98765 43210
+                <Phone size={16} strokeWidth={1.5} aria-hidden="true" /> {business.telephone}
               </a>
               <a
-                href="mailto:studio@vthittam.com"
-                className="inline-flex items-center gap-2 hover:text-white transition-colors duration-300"
+                href={`mailto:${business.email}`}
+                className="inline-flex items-center gap-2 hover:text-white transition-colors duration-300 break-all"
               >
-                <Mail size={16} strokeWidth={1.5} aria-hidden="true" /> studio@vthittam.com
+                <Mail size={16} strokeWidth={1.5} aria-hidden="true" /> {business.email}
               </a>
             </motion.div>
           </div>

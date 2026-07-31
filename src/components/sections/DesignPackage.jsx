@@ -36,6 +36,7 @@ export default function DesignPackage() {
           eyebrow="Design Package"
           title="Choose the drawing set your project stage needs."
           description="Every tier builds on the one before it — start with a concept, or take the full working set through to material selection."
+          note="Architect-led designs executed on site by experienced engineers, delivering quality construction from foundation to finish."
           align="center"
         />
 

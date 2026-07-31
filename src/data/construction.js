@@ -37,7 +37,7 @@ export const constructionStages = [
   },
   {
     code: 'C-07',
-    title: 'Cost Control',
+    title: 'Budget Planning and Cost Control',
     description:
       'A detailed Bill of Quantities and forecast project budget, with material suppliers, vendors and brands chosen to hold the number agreed.',
   },

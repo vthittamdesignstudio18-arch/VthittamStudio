@@ -7,8 +7,8 @@ import ResponsiveImage, { SIZES } from '../ui/ResponsiveImage.jsx'
 const pillars = [
   {
     icon: Target,
-    title: 'Mission',
-    text: 'To deliver end-to-end architectural solutions — from concept to construction — with precision, quality, and full transparency.',
+    title: 'Mission : Design + Execution',
+    text: 'Every project is designed by qualified architects and supervised by experienced site engineers, ensuring every detail is built as intended.',
   },
   {
     icon: Eye,
@@ -40,7 +40,7 @@ export default function About() {
               />
             </div>
             <aside className="hidden md:flex absolute -bottom-8 -right-8 h-40 w-40 rounded-2xl bg-white card-hairline shadow-xl items-center justify-center flex-col p-6 text-center">
-              <span className="font-display text-3xl">20+</span>
+              <span className="font-display text-3xl">5+</span>
               <span className="text-xs uppercase tracking-widest2 text-ink-muted mt-1">
                 Years in Practice
               </span>
@@ -57,12 +57,9 @@ export default function About() {
             />
 
             <FadeIn delay={0.15} className="mt-8 max-w-xl text-ink-muted leading-relaxed">
-              Our experienced architects and designers collaborate closely with clients to create
-              personalized residential and commercial spaces that balance aesthetics, functionality, and
-              sustainability. From concept development and space planning to construction execution and
-              government approvals, we provide end-to-end architectural solutions with precision, quality,
-              and transparency — delivering timeless designs that enhance everyday living while ensuring a
-              smooth, stress-free experience from planning to completion.
+              Experienced architects design every project with precision, while our experienced site
+              engineers ensure every drawing is executed accurately on site. This seamless collaboration
+              bridges design and construction, delivering spaces exactly as envisioned.
             </FadeIn>
 
             <ul className="mt-10 md:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-5 md:gap-6 list-none">

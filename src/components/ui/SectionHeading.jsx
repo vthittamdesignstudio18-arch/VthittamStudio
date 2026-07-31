@@ -16,6 +16,7 @@ export default function SectionHeading({
   eyebrow,
   title,
   description,
+  note,
   align = 'left',
   light = false,
   as: Heading = 'h2',
@@ -47,6 +48,18 @@ export default function SectionHeading({
           }`}
         >
           {description}
+        </p>
+      )}
+
+      {/* Optional supporting line, set slightly quieter than the description
+          so the two read as a pair rather than competing. */}
+      {note && (
+        <p
+          className={`text-sm md:text-base leading-relaxed ${
+            light ? 'text-white/70' : 'text-ink-muted'
+          }`}
+        >
+          {note}
         </p>
       )}
     </div>

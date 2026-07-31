@@ -2,7 +2,7 @@ import { Routes, Route } from './lib/router.jsx'
 import Navbar from './components/layout/Navbar.jsx'
 import Footer from './components/layout/Footer.jsx'
 import ScrollToTop from './components/layout/ScrollToTop.jsx'
-import { BackToTop } from './components/ui/ScrollUtilities.jsx'
+import { FloatingActions } from './components/ui/ScrollUtilities.jsx'
 import useDocumentMeta from './hooks/useDocumentMeta.js'
 
 import HomePage from './pages/HomePage.jsx'
@@ -38,7 +38,7 @@ export default function App() {
       </main>
 
       <Footer />
-      <BackToTop />
+      <FloatingActions />
     </div>
   )
 }
