@@ -42,7 +42,7 @@ export default function About() {
             <aside className="hidden md:flex absolute -bottom-8 -right-8 h-40 w-40 rounded-2xl bg-white card-hairline shadow-xl items-center justify-center flex-col p-6 text-center">
               <span className="font-display text-3xl">5+</span>
               <span className="text-xs uppercase tracking-widest2 text-ink-muted mt-1">
-                Years in Practice
+                Years of Experience
               </span>
             </aside>
           </FadeIn>
