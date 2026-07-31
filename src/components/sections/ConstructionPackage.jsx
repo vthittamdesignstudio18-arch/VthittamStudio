@@ -1,6 +1,5 @@
 import Container from '../ui/Container.jsx'
 import SectionHeading from '../ui/SectionHeading.jsx'
-import FadeIn from '../ui/FadeIn.jsx'
 import { constructionStages } from '../../data/construction.js'
 
 /** Stages per row on lg — drives both the stagger and the timeline connectors. */
@@ -8,9 +7,10 @@ const COLUMNS = 3
 
 export default function ConstructionPackage() {
   return (
-    <section id="construction-package" className="py-28 md:py-36 bg-stone-surface">
+    <section id="construction-package" aria-labelledby="construction-heading" className="py-20 sm:py-20 sm:py-24 md:py-32 lg:py-36 bg-stone-surface">
       <Container>
         <SectionHeading
+          id="construction-heading"
           sheet="A-05"
           eyebrow="Construction Package"
           title="One team, accountable from foundation to final coat."
@@ -18,17 +18,13 @@ export default function ConstructionPackage() {
           align="center"
         />
 
-        <div className="mt-20 relative">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-x-6 lg:gap-y-16">
+        <div className="mt-12 md:mt-20 relative">
+          <ol className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-10 lg:gap-x-6 lg:gap-y-16 list-none">
             {constructionStages.map((stage, i) => {
               const isRowEnd = (i + 1) % COLUMNS === 0
 
               return (
-                <FadeIn
-                  key={stage.code}
-                  delay={0.12 * (i % COLUMNS)}
-                  className="relative flex lg:flex-col gap-5 lg:gap-0"
-                >
+                <li key={stage.code} className="relative flex lg:flex-col gap-5 lg:gap-0">
                   {/* Timeline spine — links each stage to the next across the row */}
                   {!isRowEnd && (
                     <div
@@ -49,10 +45,10 @@ export default function ConstructionPackage() {
                       {stage.description}
                     </p>
                   </div>
-                </FadeIn>
+                </li>
               )
             })}
-          </div>
+          </ol>
         </div>
       </Container>
     </section>

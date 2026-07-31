@@ -4,6 +4,18 @@ import Container from '../ui/Container.jsx'
 import SectionHeading from '../ui/SectionHeading.jsx'
 import FadeIn from '../ui/FadeIn.jsx'
 import Button from '../ui/Button.jsx'
+import { business } from '../../config/site.js'
+
+const contactDetails = [
+  { icon: Phone, label: 'Phone', value: business.telephone, href: `tel:${business.telephone.replace(/\s/g, '')}` },
+  { icon: Mail, label: 'Email', value: business.email, href: `mailto:${business.email}` },
+  {
+    icon: MapPin,
+    label: 'Studio Address',
+    value: `${business.address.street}, Trichy - ${business.address.postalCode}`,
+  },
+  { icon: Clock, label: 'Business Hours', value: 'Mon – Sat, 10:00 AM – 7:00 PM' },
+]
 
 const assurances = [
   'A reply within one business day',
@@ -13,9 +25,10 @@ const assurances = [
 
 export default function Contact() {
   return (
-    <section id="contact" className="py-28 md:py-36 bg-stone-bg">
+    <section id="contact" aria-labelledby="contact-heading" className="py-20 sm:py-20 sm:py-24 md:py-32 lg:py-36 bg-stone-bg">
       <Container>
         <SectionHeading
+          id="contact-heading"
           sheet="A-11"
           eyebrow="Get In Touch"
           title="Tell us about your site and your plans."
@@ -23,30 +36,36 @@ export default function Contact() {
           align="center"
         />
 
-        <div className="mt-16 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="mt-12 md:mt-16 grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
           <FadeIn direction="right" className="lg:col-span-5 flex flex-col gap-6">
-            <div className="card-hairline p-8 flex flex-col gap-6">
-              {[
-                { icon: Phone, label: 'Phone', value: '+91 98765 43210' },
-                { icon: Mail, label: 'Email', value: 'studio@vthittam.com' },
-                { icon: MapPin, label: 'Studio Address', value: 'No. 48, 1st Floor, SG Complex, Puthur Main Road, Trichy - 620017' },
-                { icon: Clock, label: 'Business Hours', value: 'Mon – Sat, 10:00 AM – 7:00 PM' },
-              ].map((item) => (
+            <address className="card-hairline p-8 flex flex-col gap-6 not-italic">
+              {contactDetails.map((item) => (
                 <div key={item.label} className="flex items-start gap-4">
-                  <div className="h-11 w-11 shrink-0 rounded-full bg-stone-surface flex items-center justify-center">
-                    <item.icon size={18} strokeWidth={1.5} />
-                  </div>
+                  <span className="h-11 w-11 shrink-0 rounded-full bg-stone-surface flex items-center justify-center">
+                    <item.icon size={18} strokeWidth={1.5} aria-hidden="true" />
+                  </span>
                   <div>
-                    <div className="text-xs uppercase tracking-widest2 text-ink-muted">{item.label}</div>
-                    <div className="mt-1 text-sm text-ink">{item.value}</div>
+                    <span className="block text-xs uppercase tracking-widest2 text-ink-muted">
+                      {item.label}
+                    </span>
+                    {item.href ? (
+                      <a
+                        href={item.href}
+                        className="mt-1 block text-sm text-ink underline decoration-ink/20 underline-offset-4 hover:decoration-ink transition-colors"
+                      >
+                        {item.value}
+                      </a>
+                    ) : (
+                      <span className="mt-1 block text-sm text-ink">{item.value}</span>
+                    )}
                   </div>
                 </div>
               ))}
-            </div>
+            </address>
 
             <div className="card-hairline overflow-hidden h-64">
               <iframe
-                title="Studio location map"
+                title="Map showing V Thittam Design Studio, Puthur Main Road, Trichy"
                 className="w-full h-full grayscale-[20%]"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
@@ -75,7 +94,7 @@ export default function Contact() {
             <ul className="flex flex-col gap-3">
               {assurances.map((item) => (
                 <li key={item} className="flex items-start gap-3 text-sm text-ink">
-                  <Check size={16} strokeWidth={2} className="mt-0.5 shrink-0 text-clay-600" />
+                  <Check size={16} strokeWidth={2} aria-hidden="true" className="mt-0.5 shrink-0 text-clay-700" />
                   {item}
                 </li>
               ))}

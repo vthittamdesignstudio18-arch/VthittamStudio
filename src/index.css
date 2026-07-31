@@ -18,10 +18,14 @@
 html {
   background: #FAF8F5;
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   @apply bg-stone-bg text-ink font-body antialiased;
+  /* Matched to Inter's metrics so the webfont swap causes minimal reflow. */
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
   font-feature-settings: 'ss01' on, 'cv01' on;
   overflow-x: hidden;
 }
@@ -37,7 +41,11 @@ h1, h2, h3, h4 {
 }
 
 .sheet-label {
-  @apply font-body uppercase text-[11px] tracking-widest2 text-ink/40;
+  /* Was text-ink/40 — 2.44:1 against the stone background, well under the
+     4.5:1 AA floor for text this size. ink/65 measures 5.17:1 on white,
+     5.02:1 on stone-bg and 4.87:1 on stone-surface, so it clears AA on
+     every surface the label is used on. */
+  @apply font-body uppercase text-[11px] tracking-widest2 text-ink/65;
 }
 
 .hairline {
@@ -48,9 +56,46 @@ h1, h2, h3, h4 {
   @apply mx-auto max-w-content px-6 md:px-10 lg:px-16;
 }
 
+.sr-only-focusable:not(:focus):not(:focus-within) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -100%;
+  z-index: 100;
+  padding: 0.75rem 1.25rem;
+  border-radius: 9999px;
+  background: #1F1F1F;
+  color: #FAF8F5;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
 :focus-visible {
   outline: 2px solid #1F1F1F;
   outline-offset: 3px;
+}
+
+/* On the ink-coloured sections a dark ring is invisible — invert it there. */
+.bg-ink :focus-visible,
+.bg-\[\#0E0E0C\] :focus-visible,
+[class*='bg-black'] :focus-visible {
+  outline-color: #FAF8F5;
 }
 
 .btn-primary {
@@ -130,13 +175,11 @@ h1, h2, h3, h4 {
 
 img {
   max-width: 100%;
+  height: auto;
   display: block;
   user-select: none;
-}
-
-.parallax-layer {
-  will-change: transform;
-  transform: translateZ(0);
+  /* A missing/slow image should show the page background, not a black box. */
+  background-color: transparent;
 }
 
 /* ===== PREMIUM SCROLLBAR ===== */
@@ -163,6 +206,29 @@ img {
 .hero-title {
   letter-spacing: -0.04em;
   line-height: 0.92;
+}
+
+/* ===== OPENING ANIMATION =====
+   The single intentional entrance animation on the site. Plays once on load
+   in the hero, then never again — there is no scroll-triggered motion
+   anywhere else. */
+
+@keyframes heroIntro {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.hero-intro {
+  opacity: 0;
+  animation: heroIntro 0.85s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-intro {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* ===== CINEMATIC IMAGE EFFECT ===== */

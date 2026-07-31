@@ -1,191 +1,113 @@
-import { useRef, useState, useEffect } from 'react'
-import { motion, useTransform } from 'framer-motion'
-import { T } from './journeyStages.js'
+import { useEffect, useState } from 'react'
+import { STAGE_FADE } from './journeyStages.js'
 
 // ---------------------------------------------------------------------------
-// Five real photographs, crossfaded and gently drifted (Ken Burns) across the
-// pinned scroll range. GPU-only cost: transform (scale, translate) + opacity.
-// No blur, no filters, no canvas, no WebGL — this is what keeps 60fps on
-// low-end mobile while still reading as "cinematic."
+// Five photographs crossfaded once, on load, to show a plot becoming a
+// finished residence — then held on the final frame permanently.
 //
-// Overlap strategy: each layer's fade window is widened past its own stage
-// boundary (FADE_OVERLAP on either side), so two photographs are always
-// partially visible together mid-transition. That overlap — not a hard cut —
-// is what makes the transformation read as continuous rather than as a slide
-// change. Ranges are clamped to [0,1] so the first/last images don't try to
-// fade in/out past the ends of the sequence.
+// Pure CSS opacity/transform transitions: no scroll listeners, no motion
+// values, no per-frame JavaScript.
+//
+// Sizing is left to the browser via srcset/sizes rather than a JS media
+// query. That matters for LCP: the preload scanner can start fetching the
+// correctly-sized first frame before React has even parsed, whereas a
+// JS-chosen src cannot begin downloading until hydration.
 // ---------------------------------------------------------------------------
-
-const FADE_OVERLAP = 0.09
 
 const PHOTOS = [
-  {
-    id: 'plot',
-    stage: T.plot,
-    src: '/journey/01-plot.webp',
-    mobileSrc: '/journey/01-plot-mobile.webp',
-    tiny: '/journey/01-plot-tiny.webp',
-    alt: 'Empty surveyed plot at dusk, ready for construction',
-    // Ken Burns: direction of drift while this layer is the visible one.
-    fromScale: 1.0,
-    toScale: 1.06,
-    fromX: 0,
-    toX: -10,
-    fromY: 0,
-    toY: -4,
-  },
-  {
-    id: 'blueprint',
-    stage: T.blueprint,
-    src: '/journey/02-blueprint.webp',
-    mobileSrc: '/journey/02-blueprint-mobile.webp',
-    tiny: '/journey/02-blueprint-tiny.webp',
-    alt: 'Architectural blueprint and construction markings overlaid on the plot',
-    fromScale: 1.03,
-    toScale: 1.1,
-    fromX: -6,
-    toX: 8,
-    fromY: -2,
-    toY: -8,
-  },
-  {
-    id: 'wireframe',
-    stage: T.wireframe,
-    src: '/journey/03-wireframe.webp',
-    mobileSrc: '/journey/03-wireframe-mobile.webp',
-    tiny: '/journey/03-wireframe-tiny.webp',
-    alt: 'Glowing 3D wireframe of the villa structure rising from the plot',
-    fromScale: 1.02,
-    toScale: 1.09,
-    fromX: 6,
-    toX: -8,
-    fromY: -4,
-    toY: -10,
-  },
-  {
-    id: 'development',
-    stage: T.development,
-    src: '/journey/04-development.webp',
-    mobileSrc: '/journey/04-development-mobile.webp',
-    tiny: '/journey/04-development-tiny.webp',
-    alt: 'Villa under construction with materials, windows, and structure taking shape',
-    fromScale: 1.0,
-    toScale: 1.07,
-    fromX: -4,
-    toX: 6,
-    fromY: -2,
-    toY: -8,
-  },
-  {
-    id: 'finished',
-    stage: T.finished,
-    src: '/journey/05-final.webp',
-    mobileSrc: '/journey/05-final-mobile.webp',
-    tiny: '/journey/05-final-tiny.webp',
-    alt: 'Completed luxury villa at dusk with pool, landscaping, and interior lighting',
-    fromScale: 1.0,
-    toScale: 1.045,
-    fromX: 0,
-    toX: 0,
-    fromY: 0,
-    toY: -6,
-  },
+  { id: 'plot',        base: '/journey/01-plot',        alt: 'Cleared and surveyed residential plot at dusk, staked and ready for construction in Trichy' },
+  { id: 'blueprint',   base: '/journey/02-blueprint',   alt: 'Architectural blueprint and setting-out markings overlaid on the building plot' },
+  { id: 'wireframe',   base: '/journey/03-wireframe',   alt: 'Structural wireframe of the villa rising from the plot during the design stage' },
+  { id: 'development', base: '/journey/04-development', alt: 'Villa under construction with structural frame, glazing and external materials going in' },
+  { id: 'finished',    base: '/journey/05-final',       alt: 'Completed luxury villa at dusk with swimming pool, landscaping and warm interior lighting' },
 ]
 
-const clamp01 = (v) => Math.min(1, Math.max(0, v))
+export const PHOTO_COUNT = PHOTOS.length
 
-function Layer({ photo, progress, isMobile, index, isFirst, reduceMotion }) {
-  const [start, end] = photo.stage
-  const fadeInStart = clamp01(start - FADE_OVERLAP)
-  const fadeOutEnd = clamp01(end + FADE_OVERLAP)
+/** 900w mobile crop and 1536w desktop master exist for every frame. */
+const srcSetFor = (base) => `${base}-mobile.webp 900w, ${base}.webp 1536w`
+const SIZES = '100vw'
 
-  // Opacity: rises through the overlap zone before `start`, holds fully
-  // visible through the stage's own range, then falls through the overlap
-  // zone after `end`. First layer starts fully visible (nothing precedes it);
-  // last layer stays fully visible once reached (nothing follows it).
-  const opacityStops = isFirst
-    ? [start, end, fadeOutEnd]
-    : end >= 1
-      ? [fadeInStart, start, end]
-      : [fadeInStart, start, end, fadeOutEnd]
-  const opacityRange = isFirst
-    ? [1, 1, 0]
-    : end >= 1
-      ? [0, 1, 1]
-      : [0, 1, 1, 0]
-
-  const opacity = useTransform(progress, opacityStops, opacityRange, { clamp: true })
-
-  // Ken Burns drift is scoped to this layer's own active window (with a touch
-  // of pre/post roll so the motion doesn't start/stop abruptly right as the
-  // crossfade begins) rather than the whole scroll range, so each photo has
-  // its own distinct, gentle push rather than one drift shared by all five.
-  // When reduceMotion is set, the drift targets collapse to their start
-  // values — hooks still run in the same order every render, but nothing
-  // visibly moves. The crossfade above is untouched: that's the actual
-  // content transition, not decorative motion, so it never gets suppressed.
-  const driftRange = [fadeInStart, fadeOutEnd]
-  const scale = useTransform(progress, driftRange, reduceMotion ? [photo.fromScale, photo.fromScale] : [photo.fromScale, photo.toScale], { clamp: true })
-  const x = useTransform(progress, driftRange, reduceMotion ? [photo.fromX, photo.fromX] : [photo.fromX, photo.toX], { clamp: true })
-  const y = useTransform(progress, driftRange, reduceMotion ? [photo.fromY, photo.fromY] : [photo.fromY, photo.toY], { clamp: true })
-
-  return (
-    <motion.div
-      className="absolute inset-0"
-      style={{ opacity, willChange: 'opacity' }}
-      aria-hidden={index !== 0}
-    >
-      <motion.img
-        src={isMobile ? photo.mobileSrc : photo.src}
-        alt={photo.alt}
-        className="h-full w-full object-cover"
-        style={{ scale, x, y, willChange: 'transform' }}
-        loading={index === 0 ? 'eager' : 'lazy'}
-        fetchpriority={index === 0 ? 'high' : 'auto'}
-        decoding={index === 0 ? 'sync' : 'async'}
-        draggable={false}
-      />
-    </motion.div>
-  )
+export const LCP_IMAGE = {
+  src: `${PHOTOS[0].base}.webp`,
+  srcSet: srcSetFor(PHOTOS[0].base),
+  sizes: SIZES,
 }
 
-export default function PhotoJourneyScene({ progress, isMobile, reduceMotion = false }) {
-  // Blurred micro-placeholder for the very first paint, before the real
-  // image finishes decoding — avoids a flash of empty/white background on
-  // slow connections. Fades out permanently once mounted; cheap (one image,
-  // one class, no motion value).
+export default function PhotoJourneyScene({ activeIndex, reduceMotion = false }) {
   const [placeholderVisible, setPlaceholderVisible] = useState(true)
-  const hideTimer = useRef(null)
 
   useEffect(() => {
-    hideTimer.current = setTimeout(() => setPlaceholderVisible(false), 600)
-    return () => clearTimeout(hideTimer.current)
+    const t = setTimeout(() => setPlaceholderVisible(false), 700)
+    return () => clearTimeout(t)
   }, [])
 
-  // A very slight shared vertical parallax across the whole sequence — the
-  // "camera" drifting up over the full scroll — layered underneath each
-  // photo's own Ken Burns drift for a sense of compound depth. Kept small;
-  // this is a hero image, not a 3D scene. Collapses to 0 under reduceMotion.
-  const sceneY = useTransform(progress, [0, 1], [0, reduceMotion ? 0 : isMobile ? -10 : -22])
+  // Warm the next frame so its crossfade doesn't wait on the network.
+  useEffect(() => {
+    const next = PHOTOS[activeIndex + 1]
+    if (!next) return
+    const img = new Image()
+    img.sizes = SIZES
+    img.srcset = srcSetFor(next.base)
+    img.src = `${next.base}.webp`
+  }, [activeIndex])
 
   return (
     <div className="absolute inset-0 overflow-hidden bg-[#0E0E0C]">
+      {/* 32px placeholder, inlined by the browser almost instantly, so the
+          hero is never a blank black rectangle on a slow connection. */}
       <img
-        src={PHOTOS[0].tiny}
+        src={`${PHOTOS[0].base}-tiny.webp`}
         alt=""
         aria-hidden="true"
+        width={1536}
+        height={1024}
         className="absolute inset-0 h-full w-full object-cover scale-105 pointer-events-none transition-opacity duration-500 ease-out"
         style={{ opacity: placeholderVisible ? 1 : 0 }}
       />
-      <motion.div className="absolute inset-0" style={{ y: sceneY }}>
-        {PHOTOS.map((photo, i) => (
-          <Layer key={photo.id} photo={photo} progress={progress} isMobile={isMobile} index={i} isFirst={i === 0} reduceMotion={reduceMotion} />
-        ))}
-      </motion.div>
-      {/* Filmic grade: a fixed, non-animated gradient wash. This is a static
-          CSS background, not a per-frame filter — zero animation cost — but
-          it's what keeps the five stills reading as one continuous "shot"
-          rather than a slideshow of independently-lit photos. */}
+
+      {PHOTOS.map((photo, i) => {
+        const isActive = i === activeIndex
+        const isPast = i < activeIndex
+        const isLast = i === PHOTO_COUNT - 1
+        return (
+          <div
+            key={photo.id}
+            className="absolute inset-0"
+            style={{
+              opacity: isActive ? 1 : 0,
+              transition: `opacity ${STAGE_FADE}ms cubic-bezier(0.4, 0, 0.2, 1)`,
+            }}
+          >
+            <img
+              src={`${photo.base}.webp`}
+              srcSet={srcSetFor(photo.base)}
+              sizes={SIZES}
+              // Only the resting frame carries the accessible description;
+              // the four transitional frames are decorative.
+              alt={isLast ? photo.alt : ''}
+              aria-hidden={!isLast}
+              width={1536}
+              height={1024}
+              className="h-full w-full object-cover"
+              style={{
+                objectPosition: 'center',
+                transform: reduceMotion || isActive || isPast ? 'scale(1)' : 'scale(1.05)',
+                transition: reduceMotion
+                  ? 'none'
+                  : `transform ${STAGE_FADE + 600}ms cubic-bezier(0.16, 1, 0.3, 1)`,
+              }}
+              loading={i === 0 ? 'eager' : 'lazy'}
+              fetchpriority={i === 0 ? 'high' : 'auto'}
+              decoding={i === 0 ? 'sync' : 'async'}
+              draggable={false}
+            />
+          </div>
+        )
+      })}
+
+      {/* Filmic grade: a fixed, non-animated gradient wash that keeps the five
+          stills reading as one continuous shot. */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/35 mix-blend-multiply" />
     </div>
   )

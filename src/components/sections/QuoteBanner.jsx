@@ -11,9 +11,10 @@ import Button from '../ui/Button.jsx'
  */
 export default function QuoteBanner() {
   return (
-    <section className="py-24 md:py-28 bg-stone-surface border-t border-hairline">
+    <section aria-labelledby="quote-banner-heading" className="py-16 sm:py-20 md:py-24 bg-stone-surface border-t border-hairline">
       <Container>
         <SectionHeading
+          id="quote-banner-heading"
           sheet="A-12"
           eyebrow="Start Here"
           title="Tell us what you want to build. We'll tell you what it takes."

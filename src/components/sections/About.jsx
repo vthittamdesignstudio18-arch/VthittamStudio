@@ -2,6 +2,7 @@ import { Target, Eye, HeartHandshake } from 'lucide-react'
 import Container from '../ui/Container.jsx'
 import SectionHeading from '../ui/SectionHeading.jsx'
 import FadeIn from '../ui/FadeIn.jsx'
+import ResponsiveImage, { SIZES } from '../ui/ResponsiveImage.jsx'
 
 const pillars = [
   {
@@ -23,27 +24,32 @@ const pillars = [
 
 export default function About() {
   return (
-    <section id="about" className="relative py-28 md:py-36 bg-stone-bg">
+    <section id="about" aria-labelledby="about-heading" className="relative py-20 sm:py-20 sm:py-24 md:py-32 lg:py-36 bg-stone-bg">
       <Container>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-10 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-14 lg:gap-10 items-center">
           <FadeIn direction="right" className="lg:col-span-5 relative">
             <div className="relative rounded-3xl overflow-hidden aspect-[4/5]">
-              <img
-                src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1200&auto=format&fit=crop"
-                alt="Architect reviewing plans over a residential floor layout"
-                className="h-full w-full object-cover"
+              <ResponsiveImage
+                base="/projects/residential/residential-image-3"
+                widths={[400, 800]}
+                ratio={0.667}
+                sizes={SIZES.aboutPortrait}
+                alt="Brick and render residence in Trichy completed by V Thittam Design Studio"
+                fill
+                position="center"
               />
             </div>
-            <div className="hidden md:flex absolute -bottom-8 -right-8 h-40 w-40 rounded-2xl bg-white card-hairline shadow-xl items-center justify-center flex-col p-6 text-center">
+            <aside className="hidden md:flex absolute -bottom-8 -right-8 h-40 w-40 rounded-2xl bg-white card-hairline shadow-xl items-center justify-center flex-col p-6 text-center">
               <span className="font-display text-3xl">20+</span>
               <span className="text-xs uppercase tracking-widest2 text-ink-muted mt-1">
                 Years in Practice
               </span>
-            </div>
+            </aside>
           </FadeIn>
 
           <div className="lg:col-span-7">
             <SectionHeading
+              id="about-heading"
               sheet="A-01"
               eyebrow="The Studio"
               title="Design built on planning, not guesswork."
@@ -59,15 +65,15 @@ export default function About() {
               smooth, stress-free experience from planning to completion.
             </FadeIn>
 
-            <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6">
-              {pillars.map((pillar, i) => (
-                <FadeIn key={pillar.title} delay={0.1 * i} className="card-hairline p-6">
-                  <pillar.icon size={20} className="text-clay-600" strokeWidth={1.5} />
+            <ul className="mt-10 md:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-5 md:gap-6 list-none">
+              {pillars.map((pillar) => (
+                <li key={pillar.title} className="card-hairline p-6">
+                  <pillar.icon size={20} aria-hidden="true" className="text-clay-700" strokeWidth={1.5} />
                   <h3 className="mt-4 font-display text-lg">{pillar.title}</h3>
                   <p className="mt-2 text-sm text-ink-muted leading-relaxed">{pillar.text}</p>
-                </FadeIn>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         </div>
       </Container>

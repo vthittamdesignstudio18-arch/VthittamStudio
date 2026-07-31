@@ -1,30 +1,44 @@
-import { useEffect, useRef } from 'react'
-import { motion, useInView, useMotionValue, useSpring } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
 
-export default function Counter({ value, suffix = '', className = '' }) {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: '-80px' })
-  const motionValue = useMotionValue(0)
-  const springValue = useSpring(motionValue, { damping: 30, stiffness: 60 })
-
-  useEffect(() => {
-    if (isInView) motionValue.set(value)
-  }, [isInView, motionValue, value])
-
-  const displayRef = useRef(null)
+/**
+ * Counts up to `value` once, on mount.
+ *
+ * Deliberately not tied to scroll position — it runs when the component
+ * exists and is finished long before the stat is reached. Users who prefer
+ * reduced motion get the final figure immediately.
+ */
+export default function Counter({ value, suffix = '', className = '', duration = 1200 }) {
+  const [display, setDisplay] = useState(value)
+  const frame = useRef(null)
 
   useEffect(() => {
-    const unsubscribe = springValue.on('change', (latest) => {
-      if (displayRef.current) {
-        displayRef.current.textContent = Math.round(latest).toString() + suffix
-      }
-    })
-    return unsubscribe
-  }, [springValue, suffix])
+    const reduced =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    if (reduced) {
+      setDisplay(value)
+      return
+    }
+
+    const start = performance.now()
+    setDisplay(0)
+
+    const tick = (now) => {
+      const t = Math.min((now - start) / duration, 1)
+      // easeOutCubic — quick to begin, settles gently on the final figure
+      setDisplay(Math.round(value * (1 - Math.pow(1 - t, 3))))
+      if (t < 1) frame.current = requestAnimationFrame(tick)
+    }
+
+    frame.current = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(frame.current)
+  }, [value, duration])
 
   return (
-    <motion.span ref={ref} className={className}>
-      <span ref={displayRef}>0{suffix}</span>
-    </motion.span>
+    <span className={`tabular-nums ${className}`}>
+      {display}
+      {suffix}
+    </span>
   )
 }

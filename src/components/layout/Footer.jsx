@@ -1,56 +1,87 @@
-import { Instagram, Linkedin, Facebook } from 'lucide-react'
+import { Instagram, Linkedin, Facebook, Phone, Mail } from 'lucide-react'
 import Container from '../ui/Container.jsx'
+import Logo from '../ui/Logo.jsx'
 import { navLinks } from '../../data/nav.js'
 import { services } from '../../data/services.js'
 import useSectionNavigation from '../../hooks/useSectionNavigation.js'
+
+const socials = [
+  { Icon: Instagram, label: 'Instagram', href: '#' },
+  { Icon: Linkedin, label: 'LinkedIn', href: '#' },
+  { Icon: Facebook, label: 'Facebook', href: '#' },
+]
 
 export default function Footer() {
   const year = new Date().getFullYear()
   const { goToSection } = useSectionNavigation()
 
   return (
-    <footer className="bg-ink text-white pt-20 pb-8">
+    <footer aria-labelledby="footer-heading" className="bg-ink text-white pt-16 md:pt-20 pb-8">
       <Container>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-14 border-b border-white/10">
-          <div className="md:col-span-2 pr-8">
-            <div className="font-display text-2xl mb-4">V Thittam Design Studio</div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 md:gap-12 pb-12 md:pb-14 border-b border-white/10">
+          <div className="sm:col-span-2 md:pr-8">
+            {/* Official lockup, white ink for the dark footer */}
+            <h2 id="footer-heading" className="sr-only">
+              V Thittam Design Studio — contact and site links
+            </h2>
+            <Logo tone="light" height={48} className="mb-5" />
+
             <p className="text-white/60 text-sm leading-relaxed max-w-sm">
-              An architecture, interior, and construction studio delivering considered residential and
-              commercial spaces across Trichy and Tamil Nadu.
+              An architecture, interior, and construction studio delivering considered residential
+              and commercial spaces across Trichy and Tamil Nadu.
             </p>
-            <div className="flex gap-4 mt-6">
-              {[Instagram, Linkedin, Facebook].map((Icon, i) => (
+
+            <address className="mt-6 flex flex-col gap-2.5 text-sm not-italic">
+              <a
+                href="tel:+919876543210"
+                className="inline-flex items-center gap-2.5 text-white/70 hover:text-white transition-colors w-fit"
+              >
+                <Phone size={15} strokeWidth={1.5} aria-hidden="true" /> +91 98765 43210
+              </a>
+              <a
+                href="mailto:studio@vthittam.com"
+                className="inline-flex items-center gap-2.5 text-white/70 hover:text-white transition-colors w-fit"
+              >
+                <Mail size={15} strokeWidth={1.5} aria-hidden="true" /> studio@vthittam.com
+              </a>
+            </address>
+
+            <div className="flex gap-3.5 mt-6">
+              {socials.map(({ Icon, label, href }) => (
                 <a
-                  key={i}
-                  href="#"
-                  aria-label="Social link"
+                  key={label}
+                  href={href}
+                  aria-label={label}
                   className="h-10 w-10 rounded-full border border-white/15 flex items-center justify-center hover:bg-white hover:text-ink transition-colors duration-300"
                 >
-                  <Icon size={16} />
+                  <Icon size={16} aria-hidden="true" />
                 </a>
               ))}
             </div>
           </div>
 
           <div>
-            <div className="sheet-label text-white/40 mb-5">Quick Links</div>
-            <ul className="flex flex-col gap-3">
-              {navLinks.map((link) => (
-                <li key={link.id}>
-                  <button
-                    onClick={() => goToSection(link.id)}
-                    className="text-sm text-white/70 hover:text-white transition-colors"
-                  >
-                    {link.label}
-                  </button>
-                </li>
-              ))}
-            </ul>
+            <h3 id="footer-links-heading" className="sheet-label text-white/70 mb-5">Quick Links</h3>
+            <nav aria-labelledby="footer-links-heading">
+              <ul className="flex flex-col gap-3 list-none">
+                {navLinks.map((link) => (
+                  <li key={link.id}>
+                    <button
+                      type="button"
+                      onClick={() => goToSection(link.id)}
+                      className="text-sm text-white/70 hover:text-white transition-colors text-left"
+                    >
+                      {link.label}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </nav>
           </div>
 
           <div>
-            <div className="sheet-label text-white/40 mb-5">Services</div>
-            <ul className="flex flex-col gap-3">
+            <h3 className="sheet-label text-white/70 mb-5">Services</h3>
+            <ul className="flex flex-col gap-3 list-none">
               {services.slice(0, 5).map((s) => (
                 <li key={s.code} className="text-sm text-white/70">
                   {s.title}
@@ -60,7 +91,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-3 pt-8 text-xs text-white/40">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-3 pt-8 text-xs text-white/65 text-center sm:text-left">
           <span>© {year} V Thittam Design Studio. All rights reserved.</span>
           <span className="uppercase tracking-widest2">Trichy, Tamil Nadu</span>
         </div>

@@ -9,18 +9,18 @@ import { designPackages, comparisonRows, comparisonMeta } from '../../data/packa
 
 function CheckCell({ included }) {
   return included ? (
-    <motion.span
-      initial={{ scale: 0, opacity: 0 }}
-      whileInView={{ scale: 1, opacity: 1 }}
-      viewport={{ once: true }}
-      transition={{ type: 'spring', stiffness: 300, damping: 18 }}
-      className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-clay-500/15 text-clay-700"
+    <span
+      className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-clay-600/20 text-clay-800"
+      aria-label="Included"
     >
-      <Check size={14} strokeWidth={2.5} />
-    </motion.span>
+      <Check size={14} strokeWidth={2.5} aria-hidden="true" />
+    </span>
   ) : (
-    <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-ink/5 text-ink/25">
-      <X size={13} strokeWidth={2} />
+    <span
+      className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-ink/10 text-ink/60"
+      aria-label="Not included"
+    >
+      <X size={13} strokeWidth={2} aria-hidden="true" />
     </span>
   )
 }
@@ -29,7 +29,7 @@ export default function DesignPackage() {
   const [openPkg, setOpenPkg] = useState(0)
 
   return (
-    <section id="design-package" className="py-28 md:py-36 bg-stone-bg">
+    <section id="design-package" className="py-20 sm:py-20 sm:py-24 md:py-32 lg:py-36 bg-stone-bg">
       <Container>
         <SectionHeading
           sheet="A-06"
@@ -40,7 +40,7 @@ export default function DesignPackage() {
         />
 
         {/* Pricing cards */}
-        <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="mt-14 md:mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {designPackages.map((pkg, i) => (
             <FadeIn key={pkg.id} delay={i * 0.08} className="relative">
               {pkg.popular && (
@@ -72,7 +72,7 @@ export default function DesignPackage() {
         </div>
 
         {/* Desktop / tablet comparison table */}
-        <FadeIn delay={0.2} className="mt-20 hidden md:block">
+        <FadeIn className="mt-16 md:mt-20 hidden md:block">
           <div className="card-hairline overflow-hidden">
             <div className="max-h-[560px] overflow-y-auto">
               <table className="w-full border-collapse text-sm">

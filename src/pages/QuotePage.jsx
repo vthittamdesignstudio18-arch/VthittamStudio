@@ -1,6 +1,6 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { Link } from '../lib/router.jsx'
-import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { AlertCircle, ArrowLeft, ArrowRight, CheckCircle2, Clock, Mail, Phone } from 'lucide-react'
 import Container from '../components/ui/Container.jsx'
 import FadeIn from '../components/ui/FadeIn.jsx'
@@ -22,18 +22,9 @@ const controls = {
 const EASE = [0.16, 1, 0.3, 1]
 
 export default function QuotePage() {
-  const heroRef = useRef(null)
   const [values, setValues] = useState(initialQuoteValues)
   const [status, setStatus] = useState('idle') // idle | submitting | success | error
   const [errorMessage, setErrorMessage] = useState('')
-
-  // Subtle depth as the hero scrolls away — same language as the home page.
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ['start start', 'end start'],
-  })
-  const heroY = useTransform(scrollYProgress, [0, 1], [0, 80])
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.85], [1, 0])
 
   function handleChange(e) {
     setValues((v) => ({ ...v, [e.target.name]: e.target.value }))
@@ -57,20 +48,20 @@ export default function QuotePage() {
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────────── */}
-      <section ref={heroRef} className="relative bg-ink text-white overflow-hidden">
+      <section className="relative bg-ink text-white overflow-hidden">
         <div className="absolute inset-0 blueprint-grid" aria-hidden="true" />
         <div
           className="absolute -top-40 -right-32 h-[32rem] w-[32rem] rounded-full bg-clay-600/20 blur-3xl"
           aria-hidden="true"
         />
 
-        <Container className="relative pt-40 pb-24 md:pt-48 md:pb-32">
-          <motion.div style={{ y: heroY, opacity: heroOpacity }} className="max-w-3xl">
+        <Container className="relative pt-32 pb-20 sm:pt-40 sm:pb-24 md:pt-48 md:pb-32">
+          <div className="max-w-3xl">
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: EASE }}
-              className="sheet-label text-white/50"
+              className="sheet-label text-white/70"
             >
               Sheet Q-01 — Request a Quote
             </motion.div>
@@ -101,27 +92,27 @@ export default function QuotePage() {
               className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4 text-sm text-white/60"
             >
               <span className="inline-flex items-center gap-2">
-                <Clock size={16} strokeWidth={1.5} /> Response within one business day
+                <Clock size={16} strokeWidth={1.5} aria-hidden="true" /> Response within one business day
               </span>
               <a
                 href="tel:+919876543210"
                 className="inline-flex items-center gap-2 hover:text-white transition-colors duration-300"
               >
-                <Phone size={16} strokeWidth={1.5} /> +91 98765 43210
+                <Phone size={16} strokeWidth={1.5} aria-hidden="true" /> +91 98765 43210
               </a>
               <a
                 href="mailto:studio@vthittam.com"
                 className="inline-flex items-center gap-2 hover:text-white transition-colors duration-300"
               >
-                <Mail size={16} strokeWidth={1.5} /> studio@vthittam.com
+                <Mail size={16} strokeWidth={1.5} aria-hidden="true" /> studio@vthittam.com
               </a>
             </motion.div>
-          </motion.div>
+          </div>
         </Container>
       </section>
 
       {/* ── Form ─────────────────────────────────────────────── */}
-      <section className="py-24 md:py-32 bg-stone-bg">
+      <section className="py-20 sm:py-24 md:py-32 lg:py-36 bg-stone-bg">
         <Container>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8">
             {/* What happens next */}
@@ -133,7 +124,7 @@ export default function QuotePage() {
                 </h2>
               </div>
 
-              <ol className="flex flex-col gap-8">
+              <ol className="flex flex-col gap-8 list-none">
                 {quoteSteps.map((step, i) => (
                   <li key={step.code} className="flex gap-5">
                     <div className="h-12 w-12 shrink-0 rounded-full bg-white border-2 border-ink flex items-center justify-center font-display text-sm">
@@ -154,7 +145,7 @@ export default function QuotePage() {
                 to="/"
                 className="nav-link self-start inline-flex items-center gap-2 text-sm font-semibold text-ink"
               >
-                <ArrowLeft size={16} strokeWidth={1.5} /> Back to the studio
+                <ArrowLeft size={16} strokeWidth={1.5} aria-hidden="true" /> Back to the studio
               </Link>
             </FadeIn>
 
@@ -171,9 +162,11 @@ export default function QuotePage() {
                     initial={{ opacity: 0, scale: 0.96 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0 }}
+                    role="status"
+                    aria-live="polite"
                     className="h-full min-h-[520px] flex flex-col items-center justify-center text-center gap-4"
                   >
-                    <CheckCircle2 size={44} className="text-clay-600" strokeWidth={1.5} />
+                    <CheckCircle2 size={44} aria-hidden="true" className="text-clay-700" strokeWidth={1.5} />
                     <h3 className="font-display text-2xl">Request received.</h3>
                     <p className="text-ink-muted max-w-sm">
                       Thank you — a principal architect will review your brief and call you within
@@ -228,16 +221,19 @@ export default function QuotePage() {
                     />
 
                     {status === 'error' && (
-                      <div className="flex items-start gap-3 rounded-xl bg-red-50 border border-red-200 px-5 py-4 text-sm text-red-800">
-                        <AlertCircle size={18} strokeWidth={1.5} className="mt-0.5 shrink-0" />
+                      <div
+                        role="alert"
+                        className="flex items-start gap-3 rounded-xl bg-red-50 border border-red-300 px-5 py-4 text-sm text-red-900"
+                      >
+                        <AlertCircle size={18} strokeWidth={1.5} aria-hidden="true" className="mt-0.5 shrink-0" />
                         <span>{errorMessage}</span>
                       </div>
                     )}
 
                     <div className="flex flex-col sm:flex-row sm:items-center gap-5">
-                      <Button type="submit" variant="primary" disabled={status === 'submitting'}>
+                      <Button type="submit" variant="primary" disabled={status === 'submitting'} aria-busy={status === 'submitting'}>
                         {status === 'submitting' ? 'Sending…' : 'Request Quote'}
-                        {status !== 'submitting' && <ArrowRight size={16} />}
+                        {status !== 'submitting' && <ArrowRight size={16} aria-hidden="true" />}
                       </Button>
                       <p className="text-xs text-ink-muted leading-relaxed max-w-xs">
                         Your details stay with the studio. We never share enquiries with vendors or

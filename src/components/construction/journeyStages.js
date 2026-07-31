@@ -1,49 +1,46 @@
+/**
+ * The five stages of the studio's build sequence, shown once as the opening
+ * animation on the home page.
+ *
+ * Previously each stage owned a slice of a scroll range. The sequence now
+ * plays on a timer at load and then stops, so a stage carries a dwell time
+ * instead of a scroll window.
+ */
 export const STAGES = [
   {
     id: 'plot',
-    code: '',
-    label: '',
+    code: 'C-01',
+    label: 'Plot',
     caption: 'A cleared residential plot in Trichy. Surveyed and staked, ready for a landmark build.',
-    range: [0.0, 0.2],
   },
   {
     id: 'blueprint',
-    code: '',
-    label: '',
+    code: 'C-02',
+    label: 'Blueprint',
     caption: 'Structural, electrical, and plumbing engineering resolved into one buildable working set.',
-    range: [0.2, 0.4],
   },
   {
     id: 'wireframe',
-    code: '',
-    label: '',
+    code: 'C-03',
+    label: 'Structure',
     caption: 'The structural frame takes form — walls, rooms, and volume emerging on schedule.',
-    range: [0.4, 0.6],
   },
   {
     id: 'development',
-    code: '',
-    label: '',
+    code: 'C-04',
+    label: 'Finishing',
     caption: 'Materials, glazing, and texture land under audit — every finish checked before it proceeds.',
-    range: [0.6, 0.8],
   },
   {
     id: 'finished',
-    code: '',
-    label: '',
-    caption: 'Transforming Vision Into Architectural Reality.',
-    range: [0.8, 1.0],
+    code: 'C-05',
+    label: 'Handover',
+    caption: 'Transforming vision into architectural reality.',
   },
 ]
 
-export const T = STAGES.reduce((acc, s) => {
-  acc[s.id] = s.range
-  return acc
-}, {})
+/** How long each stage holds before the next crossfade begins (ms). */
+export const STAGE_DWELL = 1150
 
-export function activeStageIndex(v) {
-  for (let i = STAGES.length - 1; i >= 0; i--) {
-    if (v >= STAGES[i].range[0]) return i
-  }
-  return 0
-}
+/** Crossfade length between two stages (ms). Also used by the CSS transition. */
+export const STAGE_FADE = 900

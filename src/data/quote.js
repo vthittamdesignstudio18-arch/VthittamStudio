@@ -3,9 +3,9 @@
  * QuotePage so the form stays declarative and easy to extend.
  */
 export const quoteFields = [
-  { name: 'name', label: 'Full Name', control: 'input', type: 'text' },
-  { name: 'phone', label: 'Phone Number', control: 'input', type: 'tel' },
-  { name: 'email', label: 'Email Address', control: 'input', type: 'email' },
+  { name: 'name', label: 'Full Name', control: 'input', type: 'text', autoComplete: 'name' },
+  { name: 'phone', label: 'Phone Number', control: 'input', type: 'tel', autoComplete: 'tel', inputMode: 'tel' },
+  { name: 'email', label: 'Email Address', control: 'input', type: 'email', autoComplete: 'email', inputMode: 'email' },
   {
     name: 'projectType',
     label: 'Project Type',
@@ -21,7 +21,7 @@ export const quoteFields = [
       'Interior Design Only',
     ],
   },
-  { name: 'location', label: 'Project Location', control: 'input', type: 'text' },
+  { name: 'location', label: 'Project Location', control: 'input', type: 'text', autoComplete: 'address-level2' },
   { name: 'area', label: 'Estimated Built-up Area (sq ft)', control: 'input', type: 'text' },
   {
     name: 'budget',

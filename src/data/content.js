@@ -81,27 +81,27 @@ export const whyChooseUs = [
 export const testimonials = [
   {
     name: 'Arun Prakash',
-    role: 'Homeowner, Kovai Hills Residence',
+    role: 'Homeowner, Residential Villa — Trichy',
     quote:
       'They translated a vague idea of "open and airy" into a home that actually reads that way in every room, at every hour of the day.',
   },
   {
     name: 'Divya Shankar',
-    role: 'Director, Rathinam Corporate Office',
+    role: 'Director, Auditorium Project — Tamil Nadu',
     quote:
-      'Our office was designed and delivered on the schedule we were given at the first meeting, which our previous contractor never once managed.',
+      'Our project was designed and delivered on the schedule we were given at the first meeting, which our previous contractor never once managed.',
   },
   {
     name: 'Karthik Ramanathan',
-    role: 'Homeowner, Saramedu Courtyard Villa',
+    role: 'Homeowner, Duplex Residence — Trichy',
     quote:
       'The site visits, the material samples, the weekly updates — we always knew exactly where our project stood.',
   },
   {
     name: 'Meera Balasubramanian',
-    role: 'Homeowner, Race Course Penthouse',
+    role: 'Homeowner, Interior Fit-Out — Trichy',
     quote:
-      'The interior team understood restraint. Nothing in the apartment feels like it was added just to fill space.',
+      'The interior team understood restraint. Nothing in the house feels like it was added just to fill space.',
   },
 ]
 
