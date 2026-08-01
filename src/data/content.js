@@ -57,7 +57,7 @@ export const whyChooseUs = [
   },
   {
     title: 'Experienced Team',
-    description: 'Architects, structural engineers, and site supervisors who have delivered 40+ projects together.',
+    description: 'Architects, structural engineers, and site supervisors who have delivered 25+ projects together.',
     icon: 'Users',
   },
   {
