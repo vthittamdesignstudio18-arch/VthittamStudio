@@ -74,9 +74,24 @@ export const serviceOffers = [
 export const routes = {
   '/': {
     path: '/',
-    title: 'Architecture & Interiors in Trichy | V Thittam Studio',
+    /**
+     * `title` and `description` are the search-facing pair: they become the
+     * <title> and <meta name="description">, which Google truncates at roughly
+     * 60 characters and 155 respectively. These are written to survive that cut
+     * with the offer still visible.
+     *
+     * `socialTitle` and `socialDescription` carry the studio's full approved
+     * wording. Facebook, LinkedIn, X and WhatsApp render far more text than a
+     * search result does, so the complete message goes there unabridged.
+     *
+     * Routes that omit the social pair simply reuse their search pair.
+     */
+    title: 'V Thittam Studio | Architects & Interior Designers, Trichy',
     description:
-      'Architecture in Trichy — residential architects and interior designers delivering house plans, 3D elevations and working drawings.',
+      'Architecture and interior design firm in Trichy — house plans, 3D elevations, working drawings, interiors and construction. Free consultation.',
+    socialTitle: 'V Thittam Studio | Architects, Interior Designers & Construction Consultants',
+    socialDescription:
+      'V Thittam Studio is a trusted architecture and interior design firm in Trichy. We specialize in house plans, 3D elevations, working drawings, interiors and construction executed by experienced site engineers. Contact us for a free consultation.',
     keywords: [
       'architecture in Trichy',
       'interior designers Trichy',
@@ -144,6 +159,14 @@ export const notFoundRoute = {
 }
 
 export const defaultRoute = routes['/']
+
+/**
+ * Open Graph, Twitter and JSON-LD get the studio's full wording; search tags get
+ * the length-safe pair. A route without a social override falls back to its
+ * search copy, so adding a page needs no extra fields.
+ */
+export const socialTitle = (route) => route.socialTitle ?? route.title
+export const socialDescription = (route) => route.socialDescription ?? route.description
 
 /** Pre-filled WhatsApp deep link. Resolves to the app on mobile and web on desktop. */
 export const whatsappLink = (
@@ -270,8 +293,10 @@ export function webPageSchema(route) {
     '@type': 'WebPage',
     '@id': `${absolute(route.path)}#webpage`,
     url: absolute(route.path),
-    name: route.title,
-    description: route.description,
+    // Structured data is not subject to a snippet limit, so it carries the
+    // studio's full wording rather than the trimmed search variant.
+    name: socialTitle(route),
+    description: socialDescription(route),
     isPartOf: { '@id': WEBSITE_ID },
     about: { '@id': ORG_ID },
     inLanguage: 'en-IN',

@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url'
 
 // Run from the project root regardless of where it was invoked.
 process.chdir(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'))
-import { routes, graphForRoute, SITE_URL } from '../src/config/site.js'
+import { routes, graphForRoute, SITE_URL, socialTitle, socialDescription } from '../src/config/site.js'
 
 let errors = 0, warns = 0
 const fail = (m) => { console.log('  ✗ ' + m); errors++ }
@@ -173,10 +173,18 @@ for (const need of ['<title>','name="description"','rel="canonical"','name="robo
 for (const [p, r] of Object.entries(routes)) {
   const g = graphForRoute(r)
   const types = g['@graph'].flatMap(e=>[].concat(e['@type']))
+  // Only the search-facing pair is length-checked. The social pair feeds Open
+  // Graph and Twitter cards, which render far more text than a search snippet
+  // and are deliberately allowed to be longer.
   if (!r.title || r.title.length > 62) warn(`${p} title is ${r.title.length} chars (aim ≤60)`)
   if (!r.description || r.description.length > 165) warn(`${p} description is ${r.description.length} chars (aim ≤160)`)
+  const st = socialTitle(r), sd = socialDescription(r)
+  if (!st || !sd) fail(`${p} has an empty social title or description`)
   try { JSON.parse(JSON.stringify(g)) } catch { fail(`${p} JSON-LD not serialisable`) }
-  ok(`${p} — ${r.title.length}c title, ${r.description.length}c desc, schema: ${[...new Set(types)].join('/')}`)
+  const shared = st === r.title && sd === r.description
+  ok(`${p} — search ${r.title.length}c/${r.description.length}c` +
+     (shared ? ', social same' : `, social ${st.length}c/${sd.length}c`) +
+     `, schema: ${[...new Set(types)].join('/')}`)
 }
 ;['LocalBusiness','ArchitecturalService','InteriorDesign','WebSite','WebPage','FAQPage']
   .forEach(t => graphForRoute(routes['/'])['@graph'].flatMap(e=>[].concat(e['@type'])).includes(t)

@@ -1,6 +1,13 @@
 import { useEffect } from 'react'
 import { useLocation } from '../lib/router.jsx'
-import { absolute, graphForRoute, notFoundRoute, routes } from '../config/site.js'
+import {
+  absolute,
+  graphForRoute,
+  notFoundRoute,
+  routes,
+  socialDescription,
+  socialTitle,
+} from '../config/site.js'
 
 /**
  * Keeps <head> in step with the client-side route.
@@ -46,6 +53,9 @@ export default function useDocumentMeta() {
     const route = routes[pathname] ?? notFoundRoute
     const canonical = absolute(route.path)
     const ogImage = absolute(route.ogImage)
+    // Search tags take the length-safe pair; social cards take the full wording.
+    const shareTitle = socialTitle(route)
+    const shareDescription = socialDescription(route)
 
     document.title = route.title
 
@@ -65,13 +75,13 @@ export default function useDocumentMeta() {
     })
 
     upsertMeta('meta[property="og:url"]', { property: 'og:url', content: canonical })
-    upsertMeta('meta[property="og:title"]', { property: 'og:title', content: route.title })
-    upsertMeta('meta[property="og:description"]', { property: 'og:description', content: route.description })
+    upsertMeta('meta[property="og:title"]', { property: 'og:title', content: shareTitle })
+    upsertMeta('meta[property="og:description"]', { property: 'og:description', content: shareDescription })
     upsertMeta('meta[property="og:image"]', { property: 'og:image', content: ogImage })
     upsertMeta('meta[property="og:image:alt"]', { property: 'og:image:alt', content: route.ogImageAlt })
 
-    upsertMeta('meta[name="twitter:title"]', { name: 'twitter:title', content: route.title })
-    upsertMeta('meta[name="twitter:description"]', { name: 'twitter:description', content: route.description })
+    upsertMeta('meta[name="twitter:title"]', { name: 'twitter:title', content: shareTitle })
+    upsertMeta('meta[name="twitter:description"]', { name: 'twitter:description', content: shareDescription })
     upsertMeta('meta[name="twitter:image"]', { name: 'twitter:image', content: ogImage })
     upsertMeta('meta[name="twitter:image:alt"]', { name: 'twitter:image:alt', content: route.ogImageAlt })
 

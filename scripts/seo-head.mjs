@@ -12,7 +12,7 @@
  * canonicals, Open Graph URLs, the sitemap and robots.txt all follow.
  */
 
-import { absolute, business, graphForRoute } from '../src/config/site.js'
+import { absolute, business, graphForRoute, socialDescription, socialTitle } from '../src/config/site.js'
 
 const esc = (s) =>
   String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
@@ -24,6 +24,9 @@ export function renderHead(route) {
   const canonical = absolute(route.path)
   const ogImage = absolute(route.ogImage)
   const jsonLd = JSON.stringify(graphForRoute(route))
+  // Search tags take the length-safe pair; social cards take the full wording.
+  const shareTitle = socialTitle(route)
+  const shareDescription = socialDescription(route)
 
   return `${MARKER_START}
     <title>${esc(route.title)}</title>
@@ -43,16 +46,16 @@ export function renderHead(route) {
     <meta property="og:site_name" content="${esc(business.name)}" />
     <meta property="og:locale" content="en_IN" />
     <meta property="og:url" content="${canonical}" />
-    <meta property="og:title" content="${esc(route.title)}" />
-    <meta property="og:description" content="${esc(route.description)}" />
+    <meta property="og:title" content="${esc(shareTitle)}" />
+    <meta property="og:description" content="${esc(shareDescription)}" />
     <meta property="og:image" content="${ogImage}" />
     <meta property="og:image:alt" content="${esc(route.ogImageAlt)}" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="675" />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="${esc(route.title)}" />
-    <meta name="twitter:description" content="${esc(route.description)}" />
+    <meta name="twitter:title" content="${esc(shareTitle)}" />
+    <meta name="twitter:description" content="${esc(shareDescription)}" />
     <meta name="twitter:image" content="${ogImage}" />
     <meta name="twitter:image:alt" content="${esc(route.ogImageAlt)}" />
 
