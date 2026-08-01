@@ -24,11 +24,16 @@ export const isQuoteSubmissionConfigured = Boolean(ACCESS_KEY)
  * @returns {Promise<{ ok: boolean, error?: string }>}
  */
 export async function submitQuoteRequest(values) {
+  // A missing key means the deploy is misconfigured, not that the visitor did
+  // anything wrong — so they get plain English and the hint goes to the console.
   if (!ACCESS_KEY) {
+    console.warn(
+      'VITE_WEB3FORMS_KEY is not set. Add it to .env locally and to the host\'s ' +
+        'environment variables in production — see the header of this file.',
+    )
     return {
       ok: false,
-      error:
-        'The quote form is not connected to an inbox yet. Add VITE_WEB3FORMS_KEY to .env — see src/lib/quoteSubmission.js for setup steps.',
+      error: 'We could not send your request just now. Please try again in a moment, or call the studio directly.',
     }
   }
 

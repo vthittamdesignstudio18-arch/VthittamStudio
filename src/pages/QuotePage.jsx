@@ -82,6 +82,15 @@ export default function QuotePage() {
               transition={{ duration: 0.6, delay: 0.12, ease: EASE }}
               className="mt-6 text-base md:text-lg leading-relaxed text-white/70 max-w-xl"
             >
+              Designing Functional, Elegant &amp; Vastu-Friendly Spaces Across Tamil Nadu
+            </motion.p>
+
+            <motion.p
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.16, ease: EASE }}
+              className="mt-4 text-base md:text-lg leading-relaxed text-white/70 max-w-xl"
+            >
               Share the site, the scope and the budget you have in mind. We'll come back with an
               honest assessment of what it takes to build it — no obligation, no template pricing.
             </motion.p>

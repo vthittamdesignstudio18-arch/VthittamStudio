@@ -44,7 +44,7 @@ export const projectCategories = [
       {
         base: '/projects/residential/residential-image-5',
         widths: [400, 800, 1200], ratio: 1.432,
-        title: 'Chennai Residence',
+        title: 'Gobichettipalayam',
         alt: 'Chennai residence elevation in grey and timber finish photographed in the evening',
       },
       {
@@ -64,6 +64,24 @@ export const projectCategories = [
         widths: [400, 800], ratio: 1.541,
         title: 'Gobichettipalayam',
         alt: 'Wide neoclassical residence in Gobichettipalayam with colonnaded frontage and landscaped forecourt',
+      },
+      {
+        base: '/projects/residential/residential-image-9',
+        widths: [400, 800, 1200], ratio: 1.5,
+        title: 'Trichy – K. K. Nagar',
+        alt: 'Contemporary three-storey residence in K. K. Nagar, Trichy with timber louvre screens, jaali panelling and a stone-clad street facade',
+      },
+      {
+        base: '/projects/residential/residential-image-10',
+        widths: [400, 800, 1200], ratio: 1.778,
+        title: 'Coimbatore – R.S. Puram',
+        alt: 'Two-storey residence in R.S. Puram, Coimbatore lit at dusk with a cantilevered balcony, timber cladding and tiled sunshades',
+      },
+      {
+        base: '/projects/residential/residential-image-11',
+        widths: [400, 800, 1200], ratio: 1.778,
+        title: 'Kanyakumari – Marthandam',
+        alt: 'Contemporary house in Marthandam, Kanyakumari with stone-clad piers, deep verandah and covered car porch at dusk',
       },
     ],
   },
@@ -202,6 +220,12 @@ export const projectCategories = [
         widths: [400, 800, 1200, 1800], ratio: 1.778,
         title: 'Modular Kitchen — Oak Finish',
         alt: 'Modular kitchen in oak finish with open shelving, marble backsplash and a garden window',
+      },
+      {
+        base: '/projects/interior/interior-image-20',
+        widths: [400, 800, 1200], ratio: 1.778,
+        title: 'Modular Kitchen — Glass-Front Tall Units',
+        alt: 'Modular kitchen with grey and white units, granite worktop and floor-to-ceiling tall storage with glass-front display cabinets',
       },
       // Devotional space — a distinct interior brief, kept last in the set.
       {
