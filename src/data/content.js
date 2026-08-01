@@ -41,7 +41,7 @@ export const processSteps = [
 
 export const stats = [
   { value: 5, suffix: '+', label: 'Years' },
-  { value: 40, suffix: '+', label: 'Projects' },
+  { value: 25, suffix: '+', label: 'Projects' },
 ]
 
 export const whyChooseUs = [
