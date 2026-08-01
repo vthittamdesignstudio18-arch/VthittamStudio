@@ -2,59 +2,82 @@ import { useEffect, useRef, useState } from 'react'
 import { ArrowRight } from 'lucide-react'
 import Container from '../ui/Container.jsx'
 import Button from '../ui/Button.jsx'
-import PhotoJourneyScene, { PHOTO_COUNT } from '../construction/PhotoJourneyScene.jsx'
-import { STAGES, STAGE_DWELL } from '../construction/journeyStages.js'
+import PhotoJourneyScene, {
+  isCompactViewport,
+  photoCountFor,
+} from '../construction/PhotoJourneyScene.jsx'
+import { stagesFor, STAGE_DWELL } from '../construction/journeyStages.js'
+import useSectionNavigation from '../../hooks/useSectionNavigation.js'
+import { onMotionPreferenceChange, prefersReducedMotion } from '../../lib/motionPreference.js'
 
 /**
  * Opening hero.
  *
- * The five build stages play through once as the page loads and then hold on
- * the finished residence. Nothing here responds to scroll: the section is a
- * single screen tall, the headline and calls to action are present and
- * clickable from the first frame, and once the sequence finishes the hero is
- * completely static.
+ * The build stages play through once as the page loads and then hold on the
+ * finished residence. Nothing here responds to scroll: the section is a single
+ * screen tall, the headline and calls to action are present and clickable from
+ * the first frame, and once the sequence finishes the hero is completely
+ * static.
  *
- * Users who prefer reduced motion skip straight to the final frame.
+ * Users who prefer reduced motion skip straight to the final frame. Phones get
+ * a two-frame cut of the sequence rather than the full five (see
+ * PhotoJourneyScene) — same story, a fraction of the bytes.
  */
 export default function ConstructionHero() {
-  const [reduceMotion, setReduceMotion] = useState(false)
+  // Both of these are read synchronously on first render rather than in an
+  // effect. Deciding the frame count after the first paint would let the
+  // browser start fetching stills that are about to be removed from the DOM.
+  const [reduceMotion, setReduceMotion] = useState(prefersReducedMotion)
+  const [compact, setCompact] = useState(isCompactViewport)
   const [activeIndex, setActiveIndex] = useState(0)
   const [sequenceDone, setSequenceDone] = useState(false)
   const timers = useRef([])
 
+  const { goToSection } = useSectionNavigation()
+  const stages = stagesFor(compact)
+  const frameCount = photoCountFor(compact)
+
+  useEffect(() => onMotionPreferenceChange(setReduceMotion), [])
+
+  // Keep the frame count honest if the window is resized across the breakpoint.
   useEffect(() => {
-    const rm = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const updateRM = () => setReduceMotion(rm.matches)
-    updateRM()
-    rm.addEventListener('change', updateRM)
-    return () => rm.removeEventListener('change', updateRM)
+    const mq = window.matchMedia('(max-width: 767px)')
+    const onChange = (e) => setCompact(e.matches)
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
   }, [])
 
   // Play the sequence once, on mount.
   useEffect(() => {
+    // Reset rather than append. The array previously grew on every re-run of
+    // this effect, holding references to timers that had already fired.
+    timers.current.forEach(clearTimeout)
+    timers.current = []
+
     if (reduceMotion) {
-      setActiveIndex(PHOTO_COUNT - 1)
+      setActiveIndex(frameCount - 1)
       setSequenceDone(true)
-      return
+      return undefined
     }
 
-    for (let i = 1; i < PHOTO_COUNT; i++) {
+    setActiveIndex(0)
+    setSequenceDone(false)
+
+    for (let i = 1; i < frameCount; i++) {
       timers.current.push(setTimeout(() => setActiveIndex(i), i * STAGE_DWELL))
     }
-    timers.current.push(
-      setTimeout(() => setSequenceDone(true), PHOTO_COUNT * STAGE_DWELL)
-    )
+    timers.current.push(setTimeout(() => setSequenceDone(true), frameCount * STAGE_DWELL))
 
     const pending = timers.current
     return () => pending.forEach(clearTimeout)
-  }, [reduceMotion])
+  }, [reduceMotion, frameCount])
 
-  const stage = STAGES[activeIndex]
+  const stage = stages[Math.min(activeIndex, stages.length - 1)]
 
   return (
     <section id="hero" aria-labelledby="hero-heading" className="relative h-[100svh] min-h-[600px] w-full overflow-hidden bg-[#0E0E0C]">
       <div className="absolute inset-0">
-        <PhotoJourneyScene activeIndex={activeIndex} reduceMotion={reduceMotion} />
+        <PhotoJourneyScene activeIndex={activeIndex} reduceMotion={reduceMotion} compact={compact} />
       </div>
 
       {/* Legibility scrim — photographs carry far more midtone detail than an
@@ -68,8 +91,16 @@ export default function ConstructionHero() {
             Architecture &amp; Interior Design Studio — Trichy
           </div>
 
-          <h1 id="hero-heading" className="hero-intro max-w-3xl text-[2.5rem] leading-[1.06] sm:text-6xl md:text-[4.4rem] lg:text-[5rem] font-medium text-white text-balance" style={{ animationDelay: '160ms' }}>
-            Plot To Dream Home.
+          {/* The second line is real, visible copy rather than a hidden keyword.
+              The h1 is the page's strongest on-page signal and previously carried
+              only a slogan, while the page targets "architecture in Trichy". */}
+          <h1 id="hero-heading" className="hero-intro max-w-3xl font-medium text-white text-balance" style={{ animationDelay: '160ms' }}>
+            <span className="block text-[2.5rem] leading-[1.06] sm:text-6xl md:text-[4.4rem] lg:text-[5rem]">
+              Plot to dream home.
+            </span>
+            <span className="mt-3 block text-2xl leading-tight text-white/80 sm:text-3xl md:text-4xl">
+              Architecture in Trichy.
+            </span>
           </h1>
 
           <p className="hero-intro mt-6 max-w-lg text-base md:text-lg text-white/75 leading-relaxed" style={{ animationDelay: '280ms' }}>
@@ -84,10 +115,10 @@ export default function ConstructionHero() {
               variant="primary"
               onClick={(e) => {
                 e.preventDefault()
-                document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })
+                goToSection('projects')
               }}
             >
-              View Projects <ArrowRight size={16} />
+              View Projects <ArrowRight size={16} aria-hidden="true" />
             </Button>
             <Button
               as="a"
@@ -96,7 +127,7 @@ export default function ConstructionHero() {
               className="!border-white/35 !text-white hover:!bg-white hover:!text-ink"
               onClick={(e) => {
                 e.preventDefault()
-                document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
+                goToSection('contact')
               }}
             >
               Book Consultation

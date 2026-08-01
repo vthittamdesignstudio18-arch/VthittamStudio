@@ -1,4 +1,5 @@
 import { Instagram, Facebook, MessageCircle, Phone, Mail } from 'lucide-react'
+import { Link } from '../../lib/router.jsx'
 import Container from '../ui/Container.jsx'
 import Logo from '../ui/Logo.jsx'
 import { navLinks } from '../../data/nav.js'
@@ -97,20 +98,35 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="sheet-label text-white/70 mb-5">Services</h3>
-            <ul className="flex flex-col gap-3 list-none">
-              {services.slice(0, 5).map((s) => (
-                <li key={s.code} className="text-sm text-white/70">
-                  {s.title}
-                </li>
-              ))}
-            </ul>
+            <h3 id="footer-services-heading" className="sheet-label text-white/70 mb-5">Services</h3>
+            {/* These read as a link list, so they behave as one. Each jumps to
+                the Services section rather than sitting there looking clickable. */}
+            <nav aria-labelledby="footer-services-heading">
+              <ul className="flex flex-col gap-3 list-none">
+                {services.slice(0, 5).map((service) => (
+                  <li key={service.code}>
+                    <button
+                      type="button"
+                      onClick={() => goToSection('services')}
+                      className="text-sm text-white/70 hover:text-white transition-colors text-left"
+                    >
+                      {service.title}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </nav>
           </div>
         </div>
 
         <div className="flex flex-col sm:flex-row justify-between items-center gap-3 pt-8 text-xs text-white/65 text-center sm:text-left">
           <span>© {year} V Thittam Design Studio. All rights reserved.</span>
-          <span className="uppercase tracking-widest2">Trichy, Tamil Nadu</span>
+          <div className="flex items-center gap-4">
+            <Link to="/privacy" className="hover:text-white transition-colors underline underline-offset-4 decoration-white/25">
+              Privacy Policy
+            </Link>
+            <span className="uppercase tracking-widest2">Trichy, Tamil Nadu</span>
+          </div>
         </div>
       </Container>
     </footer>

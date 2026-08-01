@@ -21,7 +21,7 @@ export const processSteps = [
   },
   {
     code: '04',
-    title: '3D Visualization',
+    title: '3D Visualisation',
     description: 'You see the design rendered in three dimensions and approve it before construction begins.',
     icon: Box,
   },

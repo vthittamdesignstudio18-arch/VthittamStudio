@@ -24,7 +24,7 @@ const focusAreas = [
 
 export default function InteriorDesign() {
   return (
-    <section id="interior-design" aria-labelledby="interior-heading" className="py-20 sm:py-20 sm:py-24 md:py-32 lg:py-36 bg-ink text-white overflow-hidden">
+    <section id="interior-design" aria-labelledby="interior-heading" className="py-20 sm:py-24 md:py-32 lg:py-36 bg-ink text-white overflow-hidden">
       <Container>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-14 items-center">
           <div className="lg:col-span-6 order-2 lg:order-1">

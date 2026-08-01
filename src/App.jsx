@@ -7,6 +7,8 @@ import useDocumentMeta from './hooks/useDocumentMeta.js'
 
 import HomePage from './pages/HomePage.jsx'
 import QuotePage from './pages/QuotePage.jsx'
+import PrivacyPolicy from './pages/PrivacyPolicy.jsx'
+import NotFound from './pages/NotFound.jsx'
 
 /**
  * No smooth-scroll hijacking and no scroll-progress indicator: the page uses
@@ -31,9 +33,11 @@ export default function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/quote" element={<QuotePage />} />
-          {/* Any unrecognized path falls back to the home page rather than
-              rendering a blank <main>. */}
-          <Route path="*" element={<HomePage />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          {/* An unrecognised path gets a real 404 view. Rendering the home page
+              here made every mistyped URL look like a working link to visitors
+              and a soft 404 to search engines. */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
 

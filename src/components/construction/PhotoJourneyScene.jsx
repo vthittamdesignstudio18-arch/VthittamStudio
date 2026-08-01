@@ -22,6 +22,25 @@ const PHOTOS = [
   { id: 'finished',    base: '/journey/05-final',       alt: 'Completed luxury villa at dusk with swimming pool, landscaping and warm interior lighting' },
 ]
 
+/**
+ * On a phone the sequence is cut to its first and last frame.
+ *
+ * The full run costs five files — about 446 KB on mobile — to tell a story the
+ * opening and closing frames already tell. Dropping the three transitional
+ * frames there saves roughly 274 KB on the connection least able to afford it,
+ * and the plot-to-residence crossfade still lands. Desktop, where the bandwidth
+ * is there, keeps all five.
+ */
+const COMPACT_QUERY = '(max-width: 767px)'
+
+export function isCompactViewport() {
+  return typeof window !== 'undefined' && window.matchMedia(COMPACT_QUERY).matches
+}
+
+export const framesFor = (compact) => (compact ? [PHOTOS[0], PHOTOS[PHOTOS.length - 1]] : PHOTOS)
+
+export const photoCountFor = (compact) => framesFor(compact).length
+
 export const PHOTO_COUNT = PHOTOS.length
 
 /** 900w mobile crop and 1536w desktop master exist for every frame. */
@@ -34,8 +53,9 @@ export const LCP_IMAGE = {
   sizes: SIZES,
 }
 
-export default function PhotoJourneyScene({ activeIndex, reduceMotion = false }) {
+export default function PhotoJourneyScene({ activeIndex, reduceMotion = false, compact = false }) {
   const [placeholderVisible, setPlaceholderVisible] = useState(true)
+  const frames = framesFor(compact)
 
   useEffect(() => {
     const t = setTimeout(() => setPlaceholderVisible(false), 700)
@@ -44,13 +64,13 @@ export default function PhotoJourneyScene({ activeIndex, reduceMotion = false })
 
   // Warm the next frame so its crossfade doesn't wait on the network.
   useEffect(() => {
-    const next = PHOTOS[activeIndex + 1]
+    const next = framesFor(compact)[activeIndex + 1]
     if (!next) return
     const img = new Image()
     img.sizes = SIZES
     img.srcset = srcSetFor(next.base)
     img.src = `${next.base}.webp`
-  }, [activeIndex])
+  }, [activeIndex, compact])
 
   return (
     <div className="absolute inset-0 overflow-hidden bg-[#0E0E0C]">
@@ -66,10 +86,10 @@ export default function PhotoJourneyScene({ activeIndex, reduceMotion = false })
         style={{ opacity: placeholderVisible ? 1 : 0 }}
       />
 
-      {PHOTOS.map((photo, i) => {
+      {frames.map((photo, i) => {
         const isActive = i === activeIndex
         const isPast = i < activeIndex
-        const isLast = i === PHOTO_COUNT - 1
+        const isLast = i === frames.length - 1
         return (
           <div
             key={photo.id}

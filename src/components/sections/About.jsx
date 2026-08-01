@@ -24,7 +24,7 @@ const pillars = [
 
 export default function About() {
   return (
-    <section id="about" aria-labelledby="about-heading" className="relative py-20 sm:py-20 sm:py-24 md:py-32 lg:py-36 bg-stone-bg">
+    <section id="about" aria-labelledby="about-heading" className="relative py-20 sm:py-24 md:py-32 lg:py-36 bg-stone-bg">
       <Container>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-14 lg:gap-10 items-center">
           <FadeIn direction="right" className="lg:col-span-5 relative">

@@ -28,6 +28,23 @@ if (!fs.existsSync(indexPath)) {
 
 const shell = fs.readFileSync(indexPath, 'utf8')
 
+// ── 0. deploy sanity check
+// Vite inlines VITE_WEB3FORMS_KEY at build time. Without it the quote form —
+// the site's only lead-capture route — returns a generic apology for every
+// submission and logs the real cause to a console nobody reads. A local build
+// is allowed to proceed with a warning; a CI or Vercel build is not, so a
+// misconfigured deploy can never reach production silently.
+if (!process.env.VITE_WEB3FORMS_KEY) {
+  const message =
+    'VITE_WEB3FORMS_KEY is not set — the quote form will not deliver. ' +
+    'Set it in the host environment (Vercel: Settings → Environment Variables) and redeploy.'
+  if (process.env.CI || process.env.VERCEL) {
+    console.error(`postbuild: ${message}`)
+    process.exit(1)
+  }
+  console.warn(`postbuild: warning — ${message}`)
+}
+
 // ── 1. prerender every route except "/" (which is dist/index.html already)
 const prerendered = []
 for (const route of Object.values(routes)) {
@@ -73,7 +90,24 @@ Sitemap: ${SITE_URL}/sitemap.xml
 `
 )
 
+// ── 4. strip OS junk that Vite copies verbatim out of public/
+// Deleting these from the working tree is pointless: macOS writes .DS_Store
+// back the moment a folder is opened in Finder. Removing them from dist on
+// every build is the only fix that stays fixed.
+let junk = 0
+;(function sweep(dir) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name)
+    if (entry.isDirectory()) sweep(full)
+    else if (entry.name === '.DS_Store' || entry.name === 'Thumbs.db') {
+      fs.rmSync(full)
+      junk++
+    }
+  }
+})(DIST)
+
 console.log('postbuild:')
 prerendered.forEach((l) => console.log('  prerendered', l))
 console.log(`  sitemap.xml   ${Object.keys(routes).length} urls`)
 console.log(`  robots.txt    sitemap -> ${SITE_URL}/sitemap.xml`)
+console.log(`  junk removed  ${junk} file(s)`)

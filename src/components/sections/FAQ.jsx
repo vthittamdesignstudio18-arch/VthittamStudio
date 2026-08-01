@@ -12,7 +12,7 @@ export default function FAQ() {
   const [openIndex, setOpenIndex] = useState(0)
 
   return (
-    <section id="faq" aria-labelledby="faq-heading" className="py-20 sm:py-20 sm:py-24 md:py-32 lg:py-36 bg-stone-surface">
+    <section id="faq" aria-labelledby="faq-heading" className="py-20 sm:py-24 md:py-32 lg:py-36 bg-stone-surface">
       <Container>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-14">
           <div className="lg:col-span-4">
@@ -70,10 +70,12 @@ export default function FAQ() {
                   </motion.span>
                 </button>
                 </h3>
+                {/* The wrapper is always in the DOM so the button's aria-controls
+                    never points at a missing element while the panel is closed. */}
+                <div id={`faq-a-${i}`}>
                 <AnimatePresence initial={false}>
                   {openIndex === i && (
                     <motion.div
-                      id={`faq-a-${i}`}
                       role="region"
                       aria-labelledby={`faq-q-${i}`}
                       initial={{ height: 0, opacity: 0 }}
@@ -88,6 +90,7 @@ export default function FAQ() {
                     </motion.div>
                   )}
                 </AnimatePresence>
+                </div>
               </div>
             ))}
 

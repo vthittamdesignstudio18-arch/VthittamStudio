@@ -4,7 +4,10 @@ import { useEffect, useState } from 'react'
  * Observes a list of section ids and returns the id currently most in view.
  */
 export default function useActiveSection(ids = []) {
-  const [activeId, setActiveId] = useState(ids[0] ?? null)
+  // Starts empty rather than at the first section. Seeding it with ids[0] made
+  // the navbar highlight "Studio" on load, while the visitor was still looking
+  // at the hero and had navigated nowhere.
+  const [activeId, setActiveId] = useState(null)
 
   useEffect(() => {
     const elements = ids

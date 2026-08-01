@@ -7,7 +7,7 @@ const COLUMNS = 3
 
 export default function ConstructionPackage() {
   return (
-    <section id="construction-package" aria-labelledby="construction-heading" className="py-20 sm:py-20 sm:py-24 md:py-32 lg:py-36 bg-stone-surface">
+    <section id="construction-package" aria-labelledby="construction-heading" className="py-20 sm:py-24 md:py-32 lg:py-36 bg-stone-surface">
       <Container>
         <SectionHeading
           id="construction-heading"

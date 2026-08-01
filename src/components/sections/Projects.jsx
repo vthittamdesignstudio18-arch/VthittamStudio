@@ -5,6 +5,7 @@ import Container from '../ui/Container.jsx'
 import SectionHeading from '../ui/SectionHeading.jsx'
 import ResponsiveImage, { SIZES } from '../ui/ResponsiveImage.jsx'
 import { projectCategories, planningDrawings } from '../../data/projects.js'
+import useScrollLock from '../../hooks/useScrollLock.js'
 
 const EASE = [0.16, 1, 0.3, 1]
 
@@ -91,6 +92,7 @@ function AccordionCategory({ category, isOpen, onToggle, onImageClick }) {
           onClick={onToggle}
           aria-expanded={isOpen}
           aria-controls={panelId}
+          aria-label={`${category.heading} — ${count} ${count === 1 ? 'photo' : 'photos'}`}
           className="group relative block w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-inset"
         >
           <span className="relative block h-44 sm:h-48 md:h-56 overflow-hidden">
@@ -138,11 +140,12 @@ function AccordionCategory({ category, isOpen, onToggle, onImageClick }) {
         </button>
       </h3>
 
+      {/* Always mounted so aria-controls resolves even when collapsed. */}
+      <div id={panelId}>
       <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div
             key="content"
-            id={panelId}
             role="region"
             aria-labelledby={buttonId}
             initial={{ height: 0, opacity: 0 }}
@@ -164,6 +167,7 @@ function AccordionCategory({ category, isOpen, onToggle, onImageClick }) {
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
     </article>
   )
 }
@@ -173,7 +177,7 @@ function GalleryTile({ image, onClick }) {
     <button
       type="button"
       onClick={onClick}
-      className="group relative block w-full rounded-2xl overflow-hidden shadow-[0_6px_20px_rgba(0,0,0,0.08)] focus:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2"
+      className="no-drag group relative block w-full rounded-2xl overflow-hidden shadow-[0_6px_20px_rgba(0,0,0,0.08)] focus:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2"
     >
       <span className="relative block aspect-[4/3] overflow-hidden bg-stone-surface">
         <ResponsiveImage
@@ -254,6 +258,8 @@ function Lightbox({ lightbox, onClose, onStep }) {
   const [touchStartX, setTouchStartX] = useState(null)
   const dialogRef = useRef(null)
 
+  useScrollLock(Boolean(lightbox))
+
   const image = lightbox ? lightbox.images[lightbox.index] : null
   const multiple = lightbox ? lightbox.images.length > 1 : false
   const largestWidth = image ? image.widths[image.widths.length - 1] : 0
@@ -288,15 +294,11 @@ function Lightbox({ lightbox, onClose, onStep }) {
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [lightbox, multiple, onClose, onStep])
 
-  // Lock the page behind the dialog and move focus into it.
+  // Move focus into the dialog once it has painted.
   useEffect(() => {
-    if (!lightbox) return
-    document.body.style.overflow = 'hidden'
+    if (!lightbox) return undefined
     const t = setTimeout(() => dialogRef.current?.querySelector('button')?.focus(), 30)
-    return () => {
-      document.body.style.overflow = ''
-      clearTimeout(t)
-    }
+    return () => clearTimeout(t)
   }, [lightbox])
 
   const handleTouchStart = (e) => setTouchStartX(e.touches[0].clientX)
@@ -379,7 +381,7 @@ function Lightbox({ lightbox, onClose, onStep }) {
               className="max-w-full max-h-[74vh] w-auto h-auto object-contain rounded-xl mx-auto"
               decoding="async"
             />
-            <figcaption className="mt-4 text-center text-white/85 text-sm">
+            <figcaption className="mt-4 text-center text-white/85 text-sm" aria-live="polite">
               <span className="font-medium text-white">{image.title}</span>
               {multiple && (
                 <>

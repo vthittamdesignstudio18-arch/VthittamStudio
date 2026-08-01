@@ -3,12 +3,20 @@
  * form-to-email API, so no backend server is needed for a static Vite build.
  *
  * Setup (one-time):
- *   1. https://web3forms.com/  →  enter the inbox email that should receive
- *      requests (e.g. dlea.desk@gmail.com) and verify it.
+ *   1. https://web3forms.com/  →  enter the studio inbox that should receive
+ *      requests and verify it.
  *   2. Web3Forms emails back an access key.
  *   3. Put that key in a `.env` file at the project root (see .env.example):
  *        VITE_WEB3FORMS_KEY=your-key-here
  *   4. Restart `npm run dev` — Vite only reads .env on startup.
+ *
+ * IMPORTANT — production. Vite inlines this value at build time, so a `.env`
+ * file on a developer's machine has no bearing on the deployed site. The key
+ * must be set in the host's own environment variables (on Vercel:
+ * Settings → Environment Variables → Production) and the site redeployed
+ * afterwards. Setting the variable without redeploying changes nothing.
+ * scripts/postbuild.mjs fails a CI build when it is missing, so a deploy can
+ * no longer silently ship a form that discards every enquiry.
  *
  * The key is not a secret. It is designed to sit in client-side code and
  * only acts as a mailing alias for your inbox.
@@ -24,8 +32,9 @@ export const isQuoteSubmissionConfigured = Boolean(ACCESS_KEY)
  * @returns {Promise<{ ok: boolean, error?: string }>}
  */
 export async function submitQuoteRequest(values) {
-  // A missing key means the deploy is misconfigured, not that the visitor did
-  // anything wrong — so they get plain English and the hint goes to the console.
+  // Backstop. QuotePage checks isQuoteSubmissionConfigured up front and hides
+  // the submit button entirely, so reaching here means something unusual — the
+  // visitor still gets plain English and the hint still goes to the console.
   if (!ACCESS_KEY) {
     console.warn(
       'VITE_WEB3FORMS_KEY is not set. Add it to .env locally and to the host\'s ' +

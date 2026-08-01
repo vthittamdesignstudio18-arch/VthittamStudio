@@ -6,6 +6,7 @@ import SectionHeading from '../ui/SectionHeading.jsx'
 import FadeIn from '../ui/FadeIn.jsx'
 import Button from '../ui/Button.jsx'
 import { designPackages, comparisonRows, comparisonMeta } from '../../data/packages.js'
+import useSectionNavigation from '../../hooks/useSectionNavigation.js'
 
 function CheckCell({ included }) {
   return included ? (
@@ -27,11 +28,17 @@ function CheckCell({ included }) {
 
 export default function DesignPackage() {
   const [openPkg, setOpenPkg] = useState(0)
+  const { goToSection } = useSectionNavigation()
 
   return (
-    <section id="design-package" className="py-20 sm:py-20 sm:py-24 md:py-32 lg:py-36 bg-stone-bg">
+    <section
+      id="design-package"
+      aria-labelledby="design-heading"
+      className="py-20 sm:py-24 md:py-32 lg:py-36 bg-stone-bg"
+    >
       <Container>
         <SectionHeading
+          id="design-heading"
           sheet="A-06"
           eyebrow="Design Package"
           title="Choose the drawing set your project stage needs."
@@ -61,9 +68,11 @@ export default function DesignPackage() {
                   {pkg.summary}
                 </p>
                 <Button
+                  type="button"
                   variant={pkg.popular ? 'outline' : 'primary'}
                   className={`mt-7 w-full ${pkg.popular ? '!border-white/25 !text-white hover:!bg-white hover:!text-ink' : ''}`}
-                  onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+                  aria-label={`Get started with the ${pkg.name} package`}
+                  onClick={() => goToSection('contact')}
                 >
                   Get Started
                 </Button>
@@ -77,14 +86,22 @@ export default function DesignPackage() {
           <div className="card-hairline overflow-hidden">
             <div className="max-h-[560px] overflow-y-auto">
               <table className="w-full border-collapse text-sm">
+                <caption className="sr-only">
+                  Feature comparison across the Basic, Standard, Premium and Ultra Premium
+                  design packages.
+                </caption>
                 <thead className="sticky top-0 z-10 bg-white">
                   <tr>
-                    <th className="text-left font-body font-medium text-ink-muted px-6 py-5 border-b border-hairline w-[30%]">
+                    <th
+                      scope="col"
+                      className="text-left font-body font-medium text-ink-muted px-6 py-5 border-b border-hairline w-[30%]"
+                    >
                       Feature
                     </th>
                     {designPackages.map((pkg) => (
                       <th
                         key={pkg.id}
+                        scope="col"
                         className={`px-4 py-5 border-b border-hairline text-center font-display font-medium text-base ${
                           pkg.popular ? 'bg-clay-50' : ''
                         }`}
@@ -97,7 +114,12 @@ export default function DesignPackage() {
                 <tbody>
                   {comparisonRows.map((row, ri) => (
                     <tr key={row.feature} className={ri % 2 === 1 ? 'bg-stone-surface/50' : ''}>
-                      <td className="px-6 py-4 border-b border-hairline text-ink/80">{row.feature}</td>
+                      <th
+                        scope="row"
+                        className="px-6 py-4 border-b border-hairline text-left font-body font-normal text-ink/80"
+                      >
+                        {row.feature}
+                      </th>
                       {row.values.map((val, ci) => (
                         <td
                           key={ci}
@@ -113,7 +135,12 @@ export default function DesignPackage() {
 
                   {comparisonMeta.map((row) => (
                     <tr key={row.feature} className="bg-ink/[0.03] font-medium">
-                      <td className="px-6 py-4 border-b border-hairline text-ink">{row.feature}</td>
+                      <th
+                        scope="row"
+                        className="px-6 py-4 border-b border-hairline text-left font-body text-ink"
+                      >
+                        {row.feature}
+                      </th>
                       {row.values.map((val, ci) => (
                         <td
                           key={ci}
@@ -137,8 +164,12 @@ export default function DesignPackage() {
           {designPackages.map((pkg, pi) => (
             <div key={pkg.id} className="card-hairline overflow-hidden">
               <button
+                type="button"
+                id={`pkg-tab-${pkg.id}`}
+                aria-expanded={openPkg === pi}
+                aria-controls={`pkg-panel-${pkg.id}`}
                 onClick={() => setOpenPkg(openPkg === pi ? -1 : pi)}
-                className="w-full flex items-center justify-between px-5 py-4"
+                className="w-full flex items-center justify-between px-5 py-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-inset"
               >
                 <span className="font-display text-lg">{pkg.name}</span>
                 <motion.span animate={{ rotate: openPkg === pi ? 180 : 0 }} transition={{ duration: 0.3 }}>
@@ -148,6 +179,9 @@ export default function DesignPackage() {
               <AnimatePresence initial={false}>
                 {openPkg === pi && (
                   <motion.div
+                    id={`pkg-panel-${pkg.id}`}
+                    role="region"
+                    aria-labelledby={`pkg-tab-${pkg.id}`}
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}

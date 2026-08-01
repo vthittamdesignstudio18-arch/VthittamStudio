@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { ArrowUp } from 'lucide-react'
 import { whatsappLink } from '../../config/site.js'
+import { scrollBehavior } from '../../lib/motionPreference.js'
 
 /**
  * The two floating controls, stacked in the bottom-right corner.
@@ -48,7 +49,7 @@ export function FloatingActions() {
     <div className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-40 flex flex-col items-center gap-3">
       <button
         type="button"
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        onClick={() => window.scrollTo({ top: 0, behavior: scrollBehavior() })}
         aria-label="Back to top"
         aria-hidden={!showTop}
         tabIndex={showTop ? 0 : -1}

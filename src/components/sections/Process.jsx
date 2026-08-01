@@ -4,7 +4,7 @@ import { processSteps } from '../../data/content.js'
 
 export default function Process() {
   return (
-    <section id="process" aria-labelledby="process-heading" className="py-20 sm:py-20 sm:py-24 md:py-32 lg:py-36 bg-stone-bg">
+    <section id="process" aria-labelledby="process-heading" className="py-20 sm:py-24 md:py-32 lg:py-36 bg-stone-bg">
       <Container>
         <SectionHeading
           id="process-heading"

@@ -90,7 +90,7 @@ const onDisk = []
   const p = path.join(d,e.name); e.isDirectory() ? walk(p) : onDisk.push('/'+path.relative('public',p))
 }})('public')
 const orphans = onDisk.filter(f=>/^\/projects\//.test(f) && !used.has(f))
-orphans.length ? warn(`${orphans.length} unused project files: ${orphans.slice(0,4).join(', ')}`) : ok('no orphaned project images')
+orphans.length ? warn(`${orphans.length} unused project files (excluding OS junk, which postbuild strips from dist): ${orphans.slice(0,4).join(', ')}`) : ok('no orphaned project images')
 
 // ── images: responsive + alt ───────────────────────────────────────────────
 // JSX attributes can contain ">" (arrow functions, template expressions), so
@@ -132,10 +132,29 @@ noDims.length ? warn(`no explicit dimensions: ${noDims.map(([f])=>path.basename(
 
 // ── headings ───────────────────────────────────────────────────────────────
 head('Heading structure')
-const h1s = [...mods].flatMap(([f,{code}]) =>
-  [...code.matchAll(/<(?:motion\.)?h1[\s>]/g)].map(()=>f))
-h1s.length === 2 ? ok(`exactly one <h1> per page (hero + quote): ${h1s.map(f=>path.basename(f)).join(', ')}`)
-                 : fail(`expected 2 <h1> across the two pages, found ${h1s.length}: ${h1s.join(', ')}`)
+// One <h1> per rendered view. Counting a fixed total across the project breaks
+// as soon as a page is added, so this checks the rule itself: each of these
+// files owns exactly one <h1>, and no other file declares one at all.
+const H1_OWNERS = [
+  'ConstructionHero.jsx', // the home page's h1
+  'QuotePage.jsx',
+  'PrivacyPolicy.jsx',
+  'NotFound.jsx',
+]
+const h1Counts = new Map()
+for (const [f, { code }] of mods) {
+  const n = [...code.matchAll(/<(?:motion\.)?h1[\s>]/g)].length
+  if (n) h1Counts.set(path.basename(f), n)
+}
+const multiple = [...h1Counts].filter(([, n]) => n > 1)
+const unexpected = [...h1Counts.keys()].filter((f) => !H1_OWNERS.includes(f))
+const missing = H1_OWNERS.filter((f) => !h1Counts.has(f))
+
+if (multiple.length) fail(`more than one <h1> in: ${multiple.map(([f,n])=>`${f} (${n})`).join(', ')}`)
+if (unexpected.length) fail(`unexpected <h1> outside a page view: ${unexpected.join(', ')}`)
+if (missing.length) fail(`page view with no <h1>: ${missing.join(', ')}`)
+if (!multiple.length && !unexpected.length && !missing.length)
+  ok(`exactly one <h1> in each of ${H1_OWNERS.length} views: ${H1_OWNERS.join(', ')}`)
 for (const [f,{code}] of mods) {
   const levels = [...code.matchAll(/<(?:motion\.)?h([1-6])[\s>]/g)].map(m=>+m[1])
   for (let i=1;i<levels.length;i++)
@@ -185,9 +204,13 @@ unlabelled || ok('no self-closing unlabelled buttons')
 
 // ── dead code ──────────────────────────────────────────────────────────────
 head('Code hygiene')
+// Whole-identifier match. A plain substring test flagged `useScrollLock`,
+// which is a body-scroll lock for overlays, not a scroll-linked animation.
 const banned = ['whileInView','useScroll','useInView','ScrollTrigger','gsap','Lenis','unsplash']
-banned.forEach(b => [...mods].some(([,{code}])=>code.includes(b))
-  ? fail(`"${b}" still referenced`) : null)
+banned.forEach(b => {
+  const re = new RegExp(`\\b${b}\\b(?![A-Za-z0-9_])`)
+  if ([...mods].some(([,{code}]) => re.test(code))) fail(`"${b}" still referenced`)
+})
 ok('no scroll-animation APIs or external image hosts')
 const deps = JSON.parse(fs.readFileSync('package.json','utf8')).dependencies
 for (const d of Object.keys(deps))

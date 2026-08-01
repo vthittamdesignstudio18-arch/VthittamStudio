@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useLocation } from '../lib/router.jsx'
-import { absolute, defaultRoute, graphForRoute, routes } from '../config/site.js'
+import { absolute, graphForRoute, notFoundRoute, routes } from '../config/site.js'
 
 /**
  * Keeps <head> in step with the client-side route.
@@ -40,7 +40,10 @@ export default function useDocumentMeta() {
   const { pathname } = useLocation()
 
   useEffect(() => {
-    const route = routes[pathname] ?? defaultRoute
+    // An unmatched path is a 404, not the home page. Falling back to the home
+    // route here is what made every mistyped URL announce itself as the home
+    // page with the home page's canonical — a soft 404 in Search Console.
+    const route = routes[pathname] ?? notFoundRoute
     const canonical = absolute(route.path)
     const ogImage = absolute(route.ogImage)
 
@@ -49,6 +52,17 @@ export default function useDocumentMeta() {
     upsertMeta('meta[name="description"]', { name: 'description', content: route.description })
     upsertMeta('meta[name="keywords"]', { name: 'keywords', content: route.keywords.join(', ') })
     upsertLink('canonical', canonical)
+
+    // Unmatched URLs are told not to index. `follow` is kept so any links on
+    // the 404 view still pass through to the real pages.
+    const robots = route.noindex
+      ? 'noindex, follow'
+      : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
+    upsertMeta('meta[name="robots"]', { name: 'robots', content: robots })
+    upsertMeta('meta[name="googlebot"]', {
+      name: 'googlebot',
+      content: route.noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large',
+    })
 
     upsertMeta('meta[property="og:url"]', { property: 'og:url', content: canonical })
     upsertMeta('meta[property="og:title"]', { property: 'og:title', content: route.title })

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from '../lib/router.jsx'
 import { AnimatePresence, motion } from 'framer-motion'
 import { AlertCircle, ArrowLeft, ArrowRight, CheckCircle2, Clock, Mail, Phone } from 'lucide-react'
@@ -10,9 +10,10 @@ import {
   FloatingSelect,
   FloatingTextarea,
 } from '../components/ui/FloatingField.jsx'
-import { quoteFields, quoteSteps, initialQuoteValues } from '../data/quote.js'
+import { quoteSteps, initialQuoteValues, resolvedQuoteFields } from '../data/quote.js'
 import { business, telLink } from '../config/site.js'
-import { submitQuoteRequest } from '../lib/quoteSubmission.js'
+import { isQuoteSubmissionConfigured, submitQuoteRequest } from '../lib/quoteSubmission.js'
+import { validateField, validateQuote } from '../lib/quoteValidation.js'
 
 const controls = {
   input: FloatingInput,
@@ -24,27 +25,89 @@ const EASE = [0.16, 1, 0.3, 1]
 
 export default function QuotePage() {
   const [values, setValues] = useState(initialQuoteValues)
+  const [errors, setErrors] = useState({})
   const [status, setStatus] = useState('idle') // idle | submitting | success | error
   const [errorMessage, setErrorMessage] = useState('')
+  // Fields are only marked up as invalid once the visitor has left them or
+  // tried to submit. Flagging an empty field the moment it is focused is
+  // hostile; flagging it after they have moved on is helpful.
+  const [touched, setTouched] = useState({})
+  const successHeadingRef = useRef(null)
+
+  const fieldOf = useCallback(
+    (name) => resolvedQuoteFields.find((f) => f.name === name),
+    []
+  )
 
   function handleChange(e) {
-    setValues((v) => ({ ...v, [e.target.name]: e.target.value }))
+    const { name, value } = e.target
+    setValues((v) => ({ ...v, [name]: value }))
+
+    // Clear a message as soon as the input becomes acceptable, so the field
+    // stops shouting while the visitor is still fixing it.
+    setErrors((prev) => {
+      if (!prev[name]) return prev
+      const field = fieldOf(name)
+      if (!field || validateField(field, value)) return prev
+      const { [name]: _cleared, ...rest } = prev
+      return rest
+    })
+  }
+
+  function handleBlur(e) {
+    const { name, value } = e.target
+    const field = fieldOf(name)
+    if (!field) return
+    setTouched((t) => ({ ...t, [name]: true }))
+    const message = validateField(field, value)
+    setErrors((prev) => {
+      if (!message) {
+        const { [name]: _cleared, ...rest } = prev
+        return rest
+      }
+      return { ...prev, [name]: message }
+    })
   }
 
   async function handleSubmit(e) {
     e.preventDefault()
+
+    const found = validateQuote(resolvedQuoteFields, values)
+    if (Object.keys(found).length > 0) {
+      setErrors(found)
+      setTouched(Object.fromEntries(resolvedQuoteFields.map((f) => [f.name, true])))
+      // Move the visitor to the first problem in document order rather than
+      // leaving them at the submit button wondering what happened.
+      const firstInvalid = resolvedQuoteFields.find((f) => found[f.name])
+      if (firstInvalid) {
+        const el = document.getElementById(firstInvalid.name)
+        el?.focus()
+        el?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+      }
+      return
+    }
+
     setStatus('submitting')
+    setErrorMessage('')
 
     const { ok, error } = await submitQuoteRequest(values)
 
     if (ok) {
       setStatus('success')
       setValues(initialQuoteValues)
+      setErrors({})
+      setTouched({})
     } else {
       setStatus('error')
       setErrorMessage(error)
     }
   }
+
+  // The form is unmounted on success, which drops focus to <body> and loses a
+  // keyboard user's place entirely. Move it onto the confirmation instead.
+  useEffect(() => {
+    if (status === 'success') successHeadingRef.current?.focus()
+  }, [status])
 
   return (
     <>
@@ -177,7 +240,9 @@ export default function QuotePage() {
                     className="h-full min-h-[520px] flex flex-col items-center justify-center text-center gap-4"
                   >
                     <CheckCircle2 size={44} aria-hidden="true" className="text-clay-700" strokeWidth={1.5} />
-                    <h3 className="font-display text-2xl">Request received.</h3>
+                    <h3 ref={successHeadingRef} tabIndex={-1} className="font-display text-2xl focus:outline-none">
+                      Request received.
+                    </h3>
                     <p className="text-ink-muted max-w-sm">
                       Thank you — a principal architect will review your brief and call you within
                       one business day.
@@ -190,6 +255,7 @@ export default function QuotePage() {
                   <motion.form
                     key="form"
                     onSubmit={handleSubmit}
+                    noValidate
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
@@ -201,7 +267,7 @@ export default function QuotePage() {
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-9">
-                      {quoteFields.map((field) => {
+                      {resolvedQuoteFields.map((field) => {
                         const Control = controls[field.control]
                         const { name, label, control: _control, full, ...rest } = field
 
@@ -212,6 +278,8 @@ export default function QuotePage() {
                               label={label}
                               value={values[name]}
                               onChange={handleChange}
+                              onBlur={handleBlur}
+                              error={touched[name] ? errors[name] ?? '' : ''}
                               {...rest}
                             />
                           </div>
@@ -240,14 +308,46 @@ export default function QuotePage() {
                       </div>
                     )}
 
+                    {/* A missing access key means the deploy is misconfigured, not that
+                        the visitor did anything wrong. Rather than offering a submit
+                        button that can only ever fail, tell them plainly and give them
+                        a route that works. */}
+                    {!isQuoteSubmissionConfigured && (
+                      <div
+                        role="alert"
+                        className="flex items-start gap-3 rounded-xl bg-amber-50 border border-amber-300 px-5 py-4 text-sm text-amber-900"
+                      >
+                        <AlertCircle size={18} strokeWidth={1.5} aria-hidden="true" className="mt-0.5 shrink-0" />
+                        <span>
+                          This form is temporarily unavailable. Please call the studio on{' '}
+                          <a href={telLink(business.telephone)} className="font-semibold underline underline-offset-2">
+                            {business.telephone}
+                          </a>{' '}
+                          or email{' '}
+                          <a href={`mailto:${business.email}`} className="font-semibold underline underline-offset-2 break-all">
+                            {business.email}
+                          </a>
+                          .
+                        </span>
+                      </div>
+                    )}
+
                     <div className="flex flex-col sm:flex-row sm:items-center gap-5">
-                      <Button type="submit" variant="primary" disabled={status === 'submitting'} aria-busy={status === 'submitting'}>
+                      <Button
+                        type="submit"
+                        variant="primary"
+                        disabled={status === 'submitting' || !isQuoteSubmissionConfigured}
+                        aria-busy={status === 'submitting'}
+                      >
                         {status === 'submitting' ? 'Sending…' : 'Request Quote'}
                         {status !== 'submitting' && <ArrowRight size={16} aria-hidden="true" />}
                       </Button>
                       <p className="text-xs text-ink-muted leading-relaxed max-w-xs">
-                        Your details stay with the studio. We never share enquiries with vendors or
-                        third parties.
+                        Your details are used only to answer your enquiry. See our{' '}
+                        <Link to="/privacy" className="underline underline-offset-2 hover:text-ink transition-colors">
+                          privacy policy
+                        </Link>
+                        .
                       </p>
                     </div>
                   </motion.form>

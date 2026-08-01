@@ -1,11 +1,32 @@
 /**
  * Field schema for the quote request form. Rendered generically by
  * QuotePage so the form stays declarative and easy to extend.
+ *
+ * `required` is deliberately sparing. Name, phone and project type are all a
+ * principal architect needs to open a conversation; asking a visitor to commit
+ * to a budget band and a timeline before first contact turned a first enquiry
+ * into a qualification interview. Everything else is invited, not demanded.
+ *
+ * Format rules live in src/lib/quoteValidation.js, keyed by field name.
  */
 export const quoteFields = [
   { name: 'name', label: 'Full Name', control: 'input', type: 'text', autoComplete: 'name' },
-  { name: 'phone', label: 'Phone Number', control: 'input', type: 'tel', autoComplete: 'tel', inputMode: 'tel' },
-  { name: 'email', label: 'Email Address', control: 'input', type: 'email', autoComplete: 'email', inputMode: 'email' },
+  {
+    name: 'phone',
+    label: 'Phone Number',
+    control: 'input',
+    type: 'tel',
+    autoComplete: 'tel',
+    inputMode: 'tel',
+  },
+  {
+    name: 'email',
+    label: 'Email Address',
+    control: 'input',
+    type: 'email',
+    autoComplete: 'email',
+    inputMode: 'email',
+  },
   {
     name: 'projectType',
     label: 'Project Type',
@@ -21,12 +42,27 @@ export const quoteFields = [
       'Interior Design Only',
     ],
   },
-  { name: 'location', label: 'Project Location', control: 'input', type: 'text', autoComplete: 'address-level2' },
-  { name: 'area', label: 'Estimated Built-up Area (sq ft)', control: 'input', type: 'text' },
+  {
+    name: 'location',
+    label: 'Project Location',
+    control: 'input',
+    type: 'text',
+    autoComplete: 'address-level2',
+    required: false,
+  },
+  {
+    name: 'area',
+    label: 'Estimated Built-up Area (sq ft)',
+    control: 'input',
+    type: 'text',
+    inputMode: 'numeric',
+    required: false,
+  },
   {
     name: 'budget',
     label: 'Budget Range',
     control: 'select',
+    required: false,
     options: [
       'Under ₹25 Lakhs',
       '₹25 – 50 Lakhs',
@@ -40,6 +76,7 @@ export const quoteFields = [
     name: 'timeline',
     label: 'Project Timeline',
     control: 'select',
+    required: false,
     options: [
       'Ready to start immediately',
       'Within 3 months',
@@ -78,3 +115,9 @@ export const quoteSteps = [
 export const initialQuoteValues = Object.fromEntries(
   quoteFields.map((field) => [field.name, ''])
 )
+
+/** Field schema with `required` resolved, so nothing has to infer a default. */
+export const resolvedQuoteFields = quoteFields.map((field) => ({
+  ...field,
+  required: field.required !== false,
+}))

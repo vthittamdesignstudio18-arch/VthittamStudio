@@ -8,6 +8,7 @@ import Logo from '../ui/Logo.jsx'
 import { navLinks } from '../../data/nav.js'
 import useActiveSection from '../../hooks/useActiveSection.js'
 import useSectionNavigation from '../../hooks/useSectionNavigation.js'
+import useScrollLock from '../../hooks/useScrollLock.js'
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -17,12 +18,7 @@ export default function Navbar() {
   const observedIds = useMemo(() => (isHome ? navLinks.map((l) => l.id) : []), [isHome])
   const activeId = useActiveSection(observedIds)
 
-  useEffect(() => {
-    document.body.style.overflow = menuOpen ? 'hidden' : ''
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [menuOpen])
+  useScrollLock(menuOpen)
 
   // Close the mobile menu if the viewport grows past the breakpoint while open.
   useEffect(() => {

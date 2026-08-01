@@ -31,8 +31,8 @@ export function renderHead(route) {
     <meta name="keywords" content="${esc(route.keywords.join(', '))}" />
     <link rel="canonical" href="${canonical}" />
 
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-    <meta name="googlebot" content="index, follow, max-image-preview:large" />
+    <meta name="robots" content="${route.noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'}" />
+    <meta name="googlebot" content="${route.noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'}" />
     <meta name="author" content="${esc(business.name)}" />
     <meta name="geo.region" content="IN-TN" />
     <meta name="geo.placename" content="Tiruchirappalli" />

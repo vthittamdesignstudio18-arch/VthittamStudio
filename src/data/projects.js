@@ -50,13 +50,13 @@ export const projectCategories = [
       {
         base: '/projects/residential/residential-image-7',
         widths: [400, 800], ratio: 1.551,
-        title: 'Gobichettipalayam  — Alternate View',
+        title: 'Gobichettipalayam — Alternate View',
         alt: 'Gobichettipalayam residence at dusk showing the neoclassical portico, columned porch and gated entrance',
       },
       {
         base: '/projects/residential/residential-image-8',
         widths: [400, 800, 1200], ratio: 1.878,
-        title: 'Gobichettipalayam  — Front Elevation',
+        title: 'Gobichettipalayam — Front Elevation',
         alt: 'Front elevation of the Gobichettipalayam residence at dusk with colonnaded facade and lit boundary wall',
       },
       {

@@ -26,7 +26,7 @@ export const business = {
   // studio's numbers are shown.
   telephone: '+91 80151 45040',
   telephoneAlt: '+91 87607 80610',
-  email: 'Vthittamdesignstudio@gmail.com',
+  email: 'vthittamdesignstudio@gmail.com',
   /** WhatsApp business line. wa.me needs the bare international form. */
   whatsapp: '918760780610',
   address: {
@@ -74,9 +74,9 @@ export const serviceOffers = [
 export const routes = {
   '/': {
     path: '/',
-    title: 'Architecture in Trichy | Interior Designers | V Thittam Studio',
+    title: 'Architecture & Interiors in Trichy | V Thittam Studio',
     description:
-      'Architecture in Trichy — residential architects, interior designers and construction consultants delivering house plans, 3D elevations and working drawings.',
+      'Architecture in Trichy — residential architects and interior designers delivering house plans, 3D elevations and working drawings.',
     keywords: [
       'architecture in Trichy',
       'interior designers Trichy',
@@ -114,6 +114,33 @@ export const routes = {
     ogImageAlt: 'Interior project completed by V Thittam Design Studio',
     breadcrumb: [{ name: 'Home', path: '/' }, { name: 'Request a Quote', path: '/quote' }],
   },
+  '/privacy': {
+    path: '/privacy',
+    title: 'Privacy Policy | V Thittam Design Studio',
+    description:
+      'How V Thittam Design Studio collects, uses and stores the personal details you share through the quote form, and how to request their deletion.',
+    keywords: ['privacy policy', 'data protection', 'V Thittam Design Studio'],
+    ogImage: '/projects/residential/residential-image-1-1200.webp',
+    ogImageAlt: 'Contemporary villa designed by V Thittam Design Studio in Trichy',
+    breadcrumb: [{ name: 'Home', path: '/' }, { name: 'Privacy Policy', path: '/privacy' }],
+  },
+}
+
+/**
+ * Metadata for unmatched URLs.
+ *
+ * Deliberately kept out of `routes` so it is never prerendered into the sitemap
+ * — it exists only so the 404 view can set `noindex` and stop Google reporting
+ * every mistyped URL as a soft 404 of the home page.
+ */
+export const notFoundRoute = {
+  path: '/404',
+  title: 'Page Not Found | V Thittam Design Studio',
+  description: 'The page you were looking for could not be found.',
+  keywords: [],
+  ogImage: '/projects/residential/residential-image-1-1200.webp',
+  ogImageAlt: 'Contemporary villa designed by V Thittam Design Studio in Trichy',
+  noindex: true,
 }
 
 export const defaultRoute = routes['/']

@@ -12,14 +12,18 @@ export default {
           DEFAULT: '#1F1F1F',
           muted: '#666666',
         },
+        /* Full hex ramp. The 500 step and the bare `clay` alias were previously
+           declared with oklch(), which older Safari drops entirely — an invalid
+           colour is discarded rather than approximated. Neither was referenced
+           anywhere, so both were replaced: 500 is now the true hex midpoint
+           between 400 and 600, and the bare alias is gone. */
         clay: {
-          DEFAULT: 'oklch(71.4% 0.014 41.2)',
           50: '#F7F4F1',
           100: '#EDE7E1',
           200: '#DCD2C7',
           300: '#C6B8A8',
           400: '#B3A18C',
-          500: 'oklch(71.4% 0.014 41.2)',
+          500: '#9C8A76',
           600: '#8A7A67',
           700: '#6E6151',
           800: '#524940',
@@ -43,20 +47,6 @@ export default {
       },
       letterSpacing: {
         widest2: '0.28em',
-      },
-      keyframes: {
-        marquee: {
-          '0%': { transform: 'translateX(0)' },
-          '100%': { transform: 'translateX(-50%)' },
-        },
-        floaty: {
-          '0%, 100%': { transform: 'translateY(0px)' },
-          '50%': { transform: 'translateY(-14px)' },
-        },
-      },
-      animation: {
-        marquee: 'marquee 32s linear infinite',
-        floaty: 'floaty 6s ease-in-out infinite',
       },
     },
   },

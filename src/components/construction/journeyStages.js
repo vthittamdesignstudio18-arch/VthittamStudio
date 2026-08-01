@@ -39,8 +39,20 @@ export const STAGES = [
   },
 ]
 
-/** How long each stage holds before the next crossfade begins (ms). */
-export const STAGE_DWELL = 1150
+/** Caption set matching the frames actually rendered at this viewport. */
+export const stagesFor = (compact) => (compact ? [STAGES[0], STAGES[STAGES.length - 1]] : STAGES)
+
+/**
+ * How long each stage holds before the next crossfade begins (ms).
+ *
+ * WCAG 2.2.2 requires a pause/stop/hide mechanism for motion that starts on
+ * its own and runs for more than five seconds. At the previous 1150ms the
+ * sequence totalled ~6.45s (5 x 1150 + a 700ms caption fade) and had no such
+ * control. 850ms brings the whole thing to ~4.95s, which keeps the intro
+ * intact and takes it out of scope — a cleaner outcome than bolting a skip
+ * button onto a five-second animation.
+ */
+export const STAGE_DWELL = 850
 
 /** Crossfade length between two stages (ms). Also used by the CSS transition. */
 export const STAGE_FADE = 900

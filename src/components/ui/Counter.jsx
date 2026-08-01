@@ -8,7 +8,9 @@ import { useEffect, useRef, useState } from 'react'
  * reduced motion get the final figure immediately.
  */
 export default function Counter({ value, suffix = '', className = '', duration = 1200 }) {
-  const [display, setDisplay] = useState(value)
+  // Starts at 0. Seeding with `value` painted the final figure for one frame
+  // before the effect reset it, which read as a flicker.
+  const [display, setDisplay] = useState(0)
   const frame = useRef(null)
 
   useEffect(() => {
@@ -22,7 +24,6 @@ export default function Counter({ value, suffix = '', className = '', duration =
     }
 
     const start = performance.now()
-    setDisplay(0)
 
     const tick = (now) => {
       const t = Math.min((now - start) / duration, 1)

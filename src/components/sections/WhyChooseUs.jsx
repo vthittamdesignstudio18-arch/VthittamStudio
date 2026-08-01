@@ -6,7 +6,7 @@ import { whyChooseUs, stats } from '../../data/content.js'
 
 export default function WhyChooseUs() {
   return (
-    <section id="why-choose-us" aria-labelledby="why-heading" className="py-20 sm:py-20 sm:py-24 md:py-32 lg:py-36 bg-stone-surface">
+    <section id="why-choose-us" aria-labelledby="why-heading" className="py-20 sm:py-24 md:py-32 lg:py-36 bg-stone-surface">
       <Container>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-14">
           <div className="lg:col-span-5">
@@ -24,7 +24,7 @@ export default function WhyChooseUs() {
                   <div className="font-display text-2xl sm:text-3xl">
                     <Counter value={stat.value} suffix={stat.suffix} />
                   </div>
-                  <div className="mt-1.5 text-[10px] sm:text-xs uppercase tracking-wider sm:tracking-widest2 text-ink-muted leading-snug">
+                  <div className="mt-1.5 text-[11px] sm:text-xs uppercase tracking-wider sm:tracking-widest2 text-ink-muted leading-snug">
                     {stat.label}
                   </div>
                 </div>

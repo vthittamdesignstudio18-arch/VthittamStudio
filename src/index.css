@@ -4,6 +4,18 @@
 
 :root {
   --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Fixed navbar height at each breakpoint. Anchor scrolling subtracts this so
+     a section's sheet label never lands underneath the floating header.
+     mobile: header py-4 (32) + nav py-2.5 (20) + logo 34 = 86px
+     md+:    header py-6 (48) + nav py-3   (24) + logo 42 = 114px
+     A little extra is added so the label breathes rather than touching. */
+  --nav-offset: 6.5rem;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --nav-offset: 8.5rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -19,6 +31,29 @@ html {
   background: #FAF8F5;
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+
+  /* Every in-page anchor and scrollIntoView({block:'start'}) stops this far
+     below the viewport top, clearing the fixed navbar. One declaration covers
+     every call site, so the offset can never drift per-component. */
+  scroll-padding-top: var(--nav-offset);
+
+  /* Reserve the scrollbar track permanently. Without it, locking body scroll
+     for the lightbox or mobile menu removes the scrollbar and shifts the whole
+     page ~15px sideways on Windows and Linux, which have classic scrollbars. */
+  scrollbar-gutter: stable;
+
+  /* Safety net only. `clip` is used rather than `hidden` on <body>: it contains
+     stray horizontal overflow without turning the element into a scroll
+     container, so position:sticky, scroll-padding and scroll anchoring all keep
+     working. Every decorative element with a negative offset is either inside an
+     overflow-hidden parent or gated behind md:/lg:, so nothing is known to
+     overflow — this guards against future regressions rather than masking a
+     current bug. */
+  overflow-x: clip;
+
+  /* Firefox ignores ::-webkit-scrollbar; these are its equivalent. */
+  scrollbar-width: thin;
+  scrollbar-color: #8A7A67 #f4f1eb;
 }
 
 body {
@@ -27,7 +62,6 @@ body {
   font-synthesis-weight: none;
   text-rendering: optimizeLegibility;
   font-feature-settings: 'ss01' on, 'cv01' on;
-  overflow-x: hidden;
 }
 
 ::selection {
@@ -60,18 +94,6 @@ h1, h2, h3, h4 {
 
   .container-x {
     @apply mx-auto max-w-content px-6 md:px-10 lg:px-16;
-  }
-
-  .sr-only-focusable:not(:focus):not(:focus-within) {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
   }
 
   .skip-link {
@@ -114,6 +136,13 @@ h1, h2, h3, h4 {
     transform: translateY(-2px);
   }
 
+  .btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    background-image: linear-gradient(135deg, #2b2b2b 0%, #1F1F1F 60%);
+  }
+
   .btn-outline {
     @apply inline-flex items-center justify-center gap-2 rounded-full border border-ink/20 px-7 py-3.5 text-sm font-body font-semibold text-ink transition-all duration-500 hover:border-ink hover:bg-ink hover:text-stone-bg;
   }
@@ -153,39 +182,22 @@ h1, h2, h3, h4 {
     width: 100%;
   }
 
-  /* ===== PREMIUM HERO OVERLAY ===== */
-
-  .hero-overlay {
-    position: absolute;
-    inset: 0;
-    background:
-      linear-gradient(
-        to bottom,
-        rgba(0,0,0,0.35),
-        rgba(0,0,0,0.15),
-        rgba(0,0,0,0.45)
-      );
-    pointer-events: none;
-  }
-
-  /* ===== GLASS NAVBAR ===== */
-
-  .glass-nav {
-    background: rgba(255,255,255,0.08);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255,255,255,0.08);
-  }
-
   /* ===== SMOOTH IMAGE PERFORMANCE ===== */
 
   img {
     max-width: 100%;
     height: auto;
     display: block;
-    user-select: none;
     /* A missing/slow image should show the page background, not a black box. */
     background-color: transparent;
+  }
+
+  /* Selection is only suppressed where an accidental drag would interrupt a
+     gallery interaction. Everywhere else images stay selectable and copyable. */
+  .no-drag img,
+  img.no-drag {
+    user-select: none;
+    -webkit-user-drag: none;
   }
 
   /* ===== PREMIUM SCROLLBAR ===== */
@@ -205,13 +217,6 @@ h1, h2, h3, h4 {
 
   ::-webkit-scrollbar-thumb:hover {
     background: #524940;
-  }
-
-  /* ===== HERO TITLE ===== */
-
-  .hero-title {
-    letter-spacing: -0.04em;
-    line-height: 0.92;
   }
 }
 
@@ -236,15 +241,4 @@ h1, h2, h3, h4 {
     opacity: 1;
     transform: none;
   }
-}
-
-/* ===== CINEMATIC IMAGE EFFECT ===== */
-
-.arch-image {
-  transform: scale(1);
-  transition: transform 1.2s var(--ease-premium);
-}
-
-.arch-image:hover {
-  transform: scale(1.02);
 }

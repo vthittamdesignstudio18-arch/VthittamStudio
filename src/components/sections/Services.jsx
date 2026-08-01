@@ -5,7 +5,7 @@ import { services } from '../../data/services.js'
 
 export default function Services() {
   return (
-    <section id="services" aria-labelledby="services-heading" className="py-20 sm:py-20 sm:py-24 md:py-32 lg:py-36 bg-stone-surface">
+    <section id="services" aria-labelledby="services-heading" className="py-20 sm:py-24 md:py-32 lg:py-36 bg-stone-surface">
       <Container>
         <SectionHeading
           id="services-heading"
@@ -26,7 +26,7 @@ export default function Services() {
                     <div className="h-12 w-12 rounded-xl bg-stone-bg border border-hairline flex items-center justify-center transition-colors duration-500 group-hover:bg-ink group-hover:border-ink">
                       <Icon size={20} strokeWidth={1.5} aria-hidden="true" className="text-ink transition-colors duration-500 group-hover:text-white" />
                     </div>
-                    <span className="sheet-label !text-[10px] mt-1">{service.code}</span>
+                    <span className="sheet-label mt-1">{service.code}</span>
                   </div>
                   <h3 className="mt-6 font-display text-xl">{service.title}</h3>
                   <p className="mt-3 text-sm text-ink-muted leading-relaxed">{service.description}</p>
