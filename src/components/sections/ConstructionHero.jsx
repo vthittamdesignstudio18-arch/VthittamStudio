@@ -21,7 +21,8 @@ import { onMotionPreferenceChange, prefersReducedMotion } from '../../lib/motion
  *
  * Users who prefer reduced motion skip straight to the final frame. Phones get
  * a two-frame cut of the sequence rather than the full five (see
- * PhotoJourneyScene) — same story, a fraction of the bytes.
+ * PhotoJ
+ * ourneyScene) — same story, a fraction of the bytes.
  */
 export default function ConstructionHero() {
   // Both of these are read synchronously on first render rather than in an

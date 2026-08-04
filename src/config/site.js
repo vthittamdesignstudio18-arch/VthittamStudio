@@ -12,7 +12,7 @@
 
 import { faqs } from '../data/content.js'
 
-export const SITE_URL = 'https://vthittam-studio.vercel.app'
+export const SITE_URL = 'thittamdesignstudio.in'
 
 export const business = {
   name: 'V Thittam Design Studio',
