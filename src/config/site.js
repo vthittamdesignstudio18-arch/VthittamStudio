@@ -12,7 +12,10 @@
 
 import { faqs } from '../data/content.js'
 
-export const SITE_URL = 'thittamdesignstudio.in'
+// Canonical origin. Must include the scheme and no trailing slash — every
+// canonical, og:url, JSON-LD @id, sitemap <loc> and robots.txt line is built
+// from it. `www` is the canonical host; the apex 308-redirects to it.
+export const SITE_URL = 'https://www.thittamdesignstudio.in'
 
 export const business = {
   name: 'V Thittam Design Studio',
