@@ -19,6 +19,8 @@ export const SITE_URL = 'https://www.thittamdesignstudio.in'
 
 export const business = {
   name: 'V Thittam Design Studio',
+  /** Short form used for og:site_name — schema.org keeps the full legal name. */
+  shortName: 'V Thittam Studio',
   legalName: 'V Thittam Design Studio',
   tagline: 'Architecture, Interiors & Construction',
   // Kept short enough to survive Google's ~155 character snippet truncation.
@@ -105,7 +107,7 @@ export const routes = {
       'Architecture and interior design firm in Trichy — house plans, 3D elevations, working drawings, interiors and construction. Free consultation.',
     socialTitle: 'V Thittam Studio | Architects, Interior Designers & Construction Consultants',
     socialDescription:
-      'V Thittam Studio is a trusted architecture and interior design firm in Trichy. We specialize in house plans, 3D elevations, working drawings, interiors and construction executed by experienced site engineers. Contact us for a free consultation.',
+      'V Thittam Studio is a trusted architecture and interior design firm in Trichy specializing in house plans, 3D elevations, interiors and construction consulting.',
     keywords: [
       'architecture in Trichy',
       'interior designers Trichy',
@@ -123,7 +125,7 @@ export const routes = {
       'structural drawings',
       'house design',
     ],
-    ogImage: '/projects/residential/residential-image-1-1200.webp',
+    ogImage: '/brand/og-home.jpg',
     ogImageAlt: 'Contemporary villa designed by V Thittam Design Studio in Trichy',
   },
   '/quote': {
@@ -139,7 +141,7 @@ export const routes = {
       'building planning',
       'interior design studio',
     ],
-    ogImage: '/projects/interior/interior-image-5-1200.webp',
+    ogImage: '/brand/og-quote.jpg',
     ogImageAlt: 'Interior project completed by V Thittam Design Studio',
     breadcrumb: [{ name: 'Home', path: '/' }, { name: 'Request a Quote', path: '/quote' }],
   },
@@ -149,7 +151,7 @@ export const routes = {
     description:
       'How V Thittam Design Studio collects, uses and stores the personal details you share through the quote form, and how to request their deletion.',
     keywords: ['privacy policy', 'data protection', 'V Thittam Design Studio'],
-    ogImage: '/projects/residential/residential-image-1-1200.webp',
+    ogImage: '/brand/og-home.jpg',
     ogImageAlt: 'Contemporary villa designed by V Thittam Design Studio in Trichy',
     breadcrumb: [{ name: 'Home', path: '/' }, { name: 'Privacy Policy', path: '/privacy' }],
   },
@@ -167,7 +169,7 @@ export const notFoundRoute = {
   title: 'Page Not Found | V Thittam Design Studio',
   description: 'The page you were looking for could not be found.',
   keywords: [],
-  ogImage: '/projects/residential/residential-image-1-1200.webp',
+  ogImage: '/brand/og-home.jpg',
   ogImageAlt: 'Contemporary villa designed by V Thittam Design Studio in Trichy',
   noindex: true,
 }

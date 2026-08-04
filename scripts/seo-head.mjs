@@ -43,15 +43,16 @@ export function renderHead(route) {
     <meta name="ICBM" content="${business.geo.latitude}, ${business.geo.longitude}" />
 
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="${esc(business.name)}" />
+    <meta property="og:site_name" content="${esc(business.shortName)}" />
     <meta property="og:locale" content="en_IN" />
     <meta property="og:url" content="${canonical}" />
     <meta property="og:title" content="${esc(shareTitle)}" />
     <meta property="og:description" content="${esc(shareDescription)}" />
     <meta property="og:image" content="${ogImage}" />
     <meta property="og:image:alt" content="${esc(route.ogImageAlt)}" />
+    <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="675" />
+    <meta property="og:image:height" content="630" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="${esc(shareTitle)}" />
