@@ -39,7 +39,6 @@ export default function DesignPackage() {
       <Container>
         <SectionHeading
           id="design-heading"
-          sheet="A-06"
           eyebrow="Design Package"
           title="Choose the drawing set your project stage needs."
           description="Every tier builds on the one before it — start with a concept, or take the full working set through to material selection."
@@ -176,10 +175,11 @@ export default function DesignPackage() {
                   <ChevronDown size={18} />
                 </motion.span>
               </button>
+              {/* Always mounted so aria-controls resolves while collapsed. */}
+              <div id={`pkg-panel-${pkg.id}`}>
               <AnimatePresence initial={false}>
                 {openPkg === pi && (
                   <motion.div
-                    id={`pkg-panel-${pkg.id}`}
                     role="region"
                     aria-labelledby={`pkg-tab-${pkg.id}`}
                     initial={{ height: 0, opacity: 0 }}
@@ -205,6 +205,7 @@ export default function DesignPackage() {
                   </motion.div>
                 )}
               </AnimatePresence>
+              </div>
             </div>
           ))}
         </div>

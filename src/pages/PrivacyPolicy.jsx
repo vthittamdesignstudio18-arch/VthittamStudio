@@ -92,7 +92,7 @@ export default function PrivacyPolicy() {
     <section className="bg-stone-bg" aria-labelledby="privacy-heading">
       <Container className="py-28 md:py-36 lg:py-40">
         <div className="max-w-2xl">
-          <p className="sheet-label">Sheet L-01 — Privacy</p>
+          <p className="sheet-label">Privacy</p>
 
           <h1
             id="privacy-heading"

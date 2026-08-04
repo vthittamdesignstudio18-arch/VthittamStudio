@@ -18,7 +18,6 @@ export default function FAQ() {
           <div className="lg:col-span-4">
             <SectionHeading
               id="faq-heading"
-              sheet="A-10"
               eyebrow="FAQ"
               title="Answers before you ask."
               description="If your question isn't here, it takes one message to get a direct answer."

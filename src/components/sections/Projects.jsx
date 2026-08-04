@@ -44,7 +44,6 @@ export default function Projects() {
       <Container>
         <SectionHeading
           id="projects-heading"
-          sheet="A-03"
           eyebrow="Featured Work"
           title="Residential, commercial, and interior projects."
           description="A selection of recently completed and in-progress work across Trichy and Tamil Nadu — villa architecture, commercial spaces, and turnkey interiors."

@@ -97,7 +97,6 @@ export default function Contact() {
       <Container>
         <SectionHeading
           id="contact-heading"
-          sheet="A-11"
           eyebrow="Get In Touch"
           title="Tell us about your site and your plans."
           description="Book a consultation and we'll respond within one business day with next steps."

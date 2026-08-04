@@ -23,8 +23,11 @@ const pillars = [
 ]
 
 export default function About() {
+  // No bottom padding: Projects follows directly on the same background, so
+  // its own top padding is the whole seam. Keeping both halves left a
+  // doubled, empty band once the Services section was removed.
   return (
-    <section id="about" aria-labelledby="about-heading" className="relative py-20 sm:py-24 md:py-32 lg:py-36 bg-stone-bg">
+    <section id="about" aria-labelledby="about-heading" className="relative pt-20 sm:pt-24 md:pt-32 lg:pt-36 bg-stone-bg">
       <Container>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-14 lg:gap-10 items-center">
           <FadeIn direction="right" className="lg:col-span-5 relative">
@@ -50,7 +53,6 @@ export default function About() {
           <div className="lg:col-span-7">
             <SectionHeading
               id="about-heading"
-              sheet="A-01"
               eyebrow="The Studio"
               title="Design built on planning, not guesswork."
               description="At V Thittam Design Studio, we believe every successful project begins with thoughtful planning and innovative design."

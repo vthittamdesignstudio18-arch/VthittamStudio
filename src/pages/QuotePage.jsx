@@ -127,7 +127,7 @@ export default function QuotePage() {
               transition={{ duration: 0.6, ease: EASE }}
               className="sheet-label text-white/70"
             >
-              Sheet Q-01 — Request a Quote
+              Request a Quote
             </motion.div>
 
             <motion.h1
@@ -204,8 +204,7 @@ export default function QuotePage() {
                       {i + 1}
                     </div>
                     <div>
-                      <span className="sheet-label">{step.code}</span>
-                      <h3 className="mt-1 font-display text-lg">{step.title}</h3>
+                      <h3 className="font-display text-lg">{step.title}</h3>
                       <p className="mt-2 text-sm text-ink-muted leading-relaxed max-w-xs">
                         {step.description}
                       </p>

@@ -1,8 +1,6 @@
 /**
- * Every section is labelled like a drawing sheet from an architectural set
- * (e.g. "SHEET A-03 — SERVICES"). This is the page's signature device: it
- * borrows real vocabulary from architectural documentation instead of a
- * decorative 01/02/03 counter.
+ * The shared heading block for every section: a small uppercase eyebrow, the
+ * section title, and optional description/note lines.
  *
  * Renders statically — headings are present immediately rather than waiting
  * on a scroll position.
@@ -12,7 +10,6 @@
  * `id` lets the parent <section> point aria-labelledby at this heading.
  */
 export default function SectionHeading({
-  sheet,
   eyebrow,
   title,
   description,
@@ -27,10 +24,9 @@ export default function SectionHeading({
 
   return (
     <div className={`flex flex-col ${alignment} max-w-2xl gap-4 md:gap-5`}>
-      <p className={`sheet-label ${light ? 'text-white/70' : ''}`}>
-        {sheet ? `Sheet ${sheet} — ` : ''}
-        {eyebrow}
-      </p>
+      {eyebrow && (
+        <p className={`sheet-label ${light ? 'text-white/70' : ''}`}>{eyebrow}</p>
+      )}
 
       <Heading
         id={id}

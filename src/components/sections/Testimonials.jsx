@@ -67,7 +67,6 @@ export default function Testimonials() {
       <Container className="relative">
         <SectionHeading
           id="testimonials-heading"
-          sheet="A-09"
           eyebrow="Client Voices"
           title="Said after the scaffolding came down."
           align="center"

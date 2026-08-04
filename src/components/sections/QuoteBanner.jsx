@@ -15,7 +15,6 @@ export default function QuoteBanner() {
       <Container>
         <SectionHeading
           id="quote-banner-heading"
-          sheet="A-12"
           eyebrow="Start Here"
           title="Tell us what you want to build. We'll tell you what it takes."
           description="Share your site and the idea you have in mind — we'll handle the rest, from the first sketch to the final coat."

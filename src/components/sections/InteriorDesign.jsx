@@ -30,7 +30,6 @@ export default function InteriorDesign() {
           <div className="lg:col-span-6 order-2 lg:order-1">
             <SectionHeading
               id="interior-heading"
-              sheet="A-04"
               eyebrow="Interior Design"
               light
               title="Interiors that continue the architecture, room by room."

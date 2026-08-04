@@ -1,9 +1,8 @@
-import { Instagram, Facebook, MessageCircle, Phone, Mail } from 'lucide-react'
+import { Instagram, Facebook, MessageCircle, Phone, Mail, MapPin } from 'lucide-react'
 import { Link } from '../../lib/router.jsx'
 import Container from '../ui/Container.jsx'
 import Logo from '../ui/Logo.jsx'
 import { navLinks } from '../../data/nav.js'
-import { services } from '../../data/services.js'
 import { business, telLink, whatsappLink } from '../../config/site.js'
 import useSectionNavigation from '../../hooks/useSectionNavigation.js'
 
@@ -28,7 +27,7 @@ export default function Footer() {
   return (
     <footer aria-labelledby="footer-heading" className="bg-ink text-white pt-16 md:pt-20 pb-8">
       <Container>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 md:gap-12 pb-12 md:pb-14 border-b border-white/10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 md:gap-12 pb-12 md:pb-14 border-b border-white/10">
           <div className="sm:col-span-2 md:pr-8">
             {/* Official lockup, white ink for the dark footer */}
             <h2 id="footer-heading" className="sr-only">
@@ -60,6 +59,20 @@ export default function Footer() {
               >
                 <Mail size={15} strokeWidth={1.5} aria-hidden="true" /> {business.email}
               </a>
+              {/* Static studio address. Non-interactive, so it is a <p> rather
+                  than an <a>, but carries the same icon, size and colour as
+                  the lines above it. Each line is its own block, so long lines
+                  wrap inside the column instead of overflowing on mobile. */}
+              <p className="flex items-start gap-2.5 text-white/70">
+                <MapPin size={15} strokeWidth={1.5} aria-hidden="true" className="mt-1 shrink-0" />
+                <span className="leading-relaxed">
+                  {business.addressLines.map((line) => (
+                    <span key={line} className="block">
+                      {line}
+                    </span>
+                  ))}
+                </span>
+              </p>
             </address>
 
             <div className="flex gap-3.5 mt-6">
@@ -97,26 +110,6 @@ export default function Footer() {
             </nav>
           </div>
 
-          <div>
-            <h3 id="footer-services-heading" className="sheet-label text-white/70 mb-5">Services</h3>
-            {/* These read as a link list, so they behave as one. Each jumps to
-                the Services section rather than sitting there looking clickable. */}
-            <nav aria-labelledby="footer-services-heading">
-              <ul className="flex flex-col gap-3 list-none">
-                {services.slice(0, 5).map((service) => (
-                  <li key={service.code}>
-                    <button
-                      type="button"
-                      onClick={() => goToSection('services')}
-                      className="text-sm text-white/70 hover:text-white transition-colors text-left"
-                    >
-                      {service.title}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </div>
         </div>
 
         <div className="flex flex-col sm:flex-row justify-between items-center gap-3 pt-8 text-xs text-white/65 text-center sm:text-left">

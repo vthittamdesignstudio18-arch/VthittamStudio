@@ -8,7 +8,6 @@ export default function Process() {
       <Container>
         <SectionHeading
           id="process-heading"
-          sheet="A-08"
           eyebrow="How We Work"
           title="How We Process"
           align="center"

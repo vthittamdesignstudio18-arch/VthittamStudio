@@ -20,7 +20,7 @@ export default function NotFound() {
         <div className="max-w-xl">
           <p className="sheet-label flex items-center gap-2.5">
             <Compass size={15} strokeWidth={1.5} aria-hidden="true" className="text-clay-700" />
-            Sheet 404 — Page Not Found
+            Page Not Found
           </p>
 
           <h1

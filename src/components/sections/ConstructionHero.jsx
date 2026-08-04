@@ -142,9 +142,6 @@ export default function ConstructionHero() {
         style={{ opacity: sequenceDone ? 0 : 1 }}
         aria-hidden="true"
       >
-        <div className="text-[11px] font-body uppercase tracking-widest2 text-white/75 mb-2">
-          {stage.code}
-        </div>
         <p className="text-sm text-white/80 leading-relaxed">{stage.caption}</p>
       </div>
     </section>

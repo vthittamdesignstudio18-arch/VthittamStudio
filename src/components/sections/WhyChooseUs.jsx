@@ -12,7 +12,6 @@ export default function WhyChooseUs() {
           <div className="lg:col-span-5">
             <SectionHeading
               id="why-heading"
-              sheet="A-07"
               eyebrow="Why Choose Us"
               title="Five years of decisions we'd make the same way twice."
               description="Every project runs through the same standards — regardless of size, budget, or how visible the work ends up being."

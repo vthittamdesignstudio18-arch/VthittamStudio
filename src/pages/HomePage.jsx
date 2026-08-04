@@ -3,7 +3,6 @@ import { useLocation } from '../lib/router.jsx'
 
 import ConstructionHero from '../components/sections/ConstructionHero.jsx'
 import About from '../components/sections/About.jsx'
-import Services from '../components/sections/Services.jsx'
 import Projects from '../components/sections/Projects.jsx'
 import InteriorDesign from '../components/sections/InteriorDesign.jsx'
 import ConstructionPackage from '../components/sections/ConstructionPackage.jsx'
@@ -40,7 +39,6 @@ export default function HomePage() {
     <>
       <ConstructionHero />
       <About />
-      <Services />
       <Projects />
       <InteriorDesign />
       <ConstructionPackage />

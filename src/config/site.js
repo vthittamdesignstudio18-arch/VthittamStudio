@@ -36,6 +36,17 @@ export const business = {
     postalCode: '620017',
     country: 'IN',
   },
+  /**
+   * The same studio address as it is printed for humans, one entry per
+   * rendered line. Kept separate from `address` above so the schema.org
+   * PostalAddress fields search engines already hold stay byte-identical.
+   */
+  addressLines: [
+    'No: 48, SG Complex,',
+    '1st Floor,',
+    'Puthur Main Road,',
+    'Trichy – 620017',
+  ],
   // Matches the studio pin already embedded in the Contact section map.
   geo: { latitude: 10.8160354, longitude: 78.6803376 },
   openingHours: [

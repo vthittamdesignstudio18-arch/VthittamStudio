@@ -11,7 +11,6 @@ export default function ConstructionPackage() {
       <Container>
         <SectionHeading
           id="construction-heading"
-          sheet="A-05"
           eyebrow="Construction Package"
           title="One team, accountable from foundation to final coat."
           description="Turnkey construction management structured into nine stages, each signed off before the next begins."
@@ -39,8 +38,7 @@ export default function ConstructionPackage() {
                     </div>
                   </div>
                   <div className="lg:mt-7">
-                    <span className="sheet-label">{stage.code}</span>
-                    <h3 className="mt-2 font-display text-xl">{stage.title}</h3>
+                    <h3 className="font-display text-xl">{stage.title}</h3>
                     <p className="mt-2 text-sm text-ink-muted leading-relaxed max-w-[280px]">
                       {stage.description}
                     </p>
